@@ -7,8 +7,8 @@ A full-stack application enabling users to report and track lost or found items 
 | Peran | Fokus Tanggung Jawab (CP1 - CP3) | Tech Stack |
 | --- | --- | --- |
 | Gwein Antaresya Al Farabi | Desain database & Prisma schema, membuat REST API (`GET /reports`, `GET /reports/:id`, `POST /reports`), setup CORS, integrasi PostgreSQL & Cloudinary, serta deploy API. | Node.js, Express.js, PostgreSQL, Prisma ORM, Cloudinary |
-| Hania Aisyatu Zahra | | HTML, CSS, JavaScript, React.js, Vite |
-| Avatar Benedict Sengkey |  | HTML, CSS, JavaScript, React.js, Vite |
+| Hania Aisyatu Zahra | Membangun halaman Report Detail Page (/reports/:id), membangun halaman Report Submission Form (/create) | HTML, CSS, JavaScript, React.js, Vite |
+| Avatar Benedict Sengkey | Setup proyek React + Vite, membuat komponen Navbar dan Report Card, membangun halaman Public Report Listing (/reports) ( ?? beserta fitur Search & Filtering ) | HTML, CSS, JavaScript, React.js, Vite |
 
 ## 2. Daftar Halaman dan Fitur (Sesuai Perubahan Terbaru)
 
