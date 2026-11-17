@@ -1,0 +1,84 @@
+{
+  "reportTypes": [
+    "LOST",
+    "FOUND"
+  ],
+  "contactMethods": [
+    "WHATSAPP",
+    "INSTAGRAM",
+    "LINE",
+    "EMAIL"
+  ],
+  "categories": [
+    {
+      "slug": "card-document",
+      "name": "Kartu & Dokumen"
+    },
+    {
+      "slug": "electronics",
+      "name": "Elektronik"
+    },
+    {
+      "slug": "bags-wallets",
+      "name": "Tas & Dompet"
+    },
+    {
+      "slug": "drinkware",
+      "name": "Tumbler & Botol"
+    },
+    {
+      "slug": "keys",
+      "name": "Kunci"
+    },
+    {
+      "slug": "clothing",
+      "name": "Pakaian & Aksesori"
+    },
+    {
+      "slug": "stationery",
+      "name": "Buku & Alat Tulis"
+    },
+    {
+      "slug": "other",
+      "name": "Lainnya"
+    }
+  ],
+  "locations": [
+    {
+      "slug": "gedung-a",
+      "name": "Gedung A"
+    },
+    {
+      "slug": "gedung-b",
+      "name": "Gedung B"
+    },
+    {
+      "slug": "perpustakaan",
+      "name": "Perpustakaan"
+    },
+    {
+      "slug": "kantin",
+      "name": "Kantin"
+    },
+    {
+      "slug": "sekretariat",
+      "name": "Sekretariat (Sekre)"
+    },
+    {
+      "slug": "pos-satpam",
+      "name": "Pos Satpam"
+    },
+    {
+      "slug": "musholla",
+      "name": "Musholla"
+    },
+    {
+      "slug": "area-parkir",
+      "name": "Area Parkir"
+    },
+    {
+      "slug": "lainnya",
+      "name": "Lainnya"
+    }
+  ]
+}
