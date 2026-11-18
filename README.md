@@ -27,7 +27,7 @@ A full-stack application enabling users to report and track lost or found items 
 | `id` | Int (Primary Key) | Wajib (Auto) | ID unik laporan (auto-increment). |
 | `type` | Enum (`LOST` / `FOUND`) | Wajib | Jenis laporan: barang hilang atau ditemukan. |
 | `itemName` | String | Wajib | Nama barang yang hilang atau ditemukan. |
-| `category` | String | Wajib | Kategori barang (Elektronik, Dokumen/KTM, Alat Minum, dll.). |
+| `category` | String | Wajib | Kategori barang (Elektronik, Dokumen/KTM, Alat Makan & Minum, dll.). |
 | `location` | String | Wajib | Lokasi terakhir barang terlihat atau ditemukan. |
 | `description` | String | Wajib | Deskripsi ciri barang dan kronologi singkat. |
 | `imageUrl` | String? (Nullable) | Opsional | Link foto dari Cloudinary; bernilai null jika tidak ada foto. |
