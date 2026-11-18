@@ -56,7 +56,7 @@ A full-stack application enabling users to report and track lost or found items 
 ...
 
 ## 7. Mock Data
-[
+```[
   {
     "id": "a1b2c3d4-0000-4000-8000-000000000001",
     "type": "LOST",
@@ -345,4 +345,4 @@ A full-stack application enabling users to report and track lost or found items 
     "createdAt": "2026-11-08T16:45:00.000Z",
     "updatedAt": "2026-11-08T16:45:00.000Z"
   }
-]
+]```
