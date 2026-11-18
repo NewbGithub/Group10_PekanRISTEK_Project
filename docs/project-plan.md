@@ -8,8 +8,8 @@ Aplikasi web *full-stack* untuk membantu mahasiswa melaporkan barang hilang (*Lo
 | Peran | Fokus Tanggung Jawab (CP1 - CP3) | Tech Stack |
 | --- | --- | --- |
 | Gwein Antaresya Al Farabi | Desain database & Prisma schema, membuat REST API (`GET /reports`, `GET /reports/:id`, `POST /reports`), setup CORS, integrasi PostgreSQL & Cloudinary, serta deploy API. | Node.js, Express.js, PostgreSQL, Prisma ORM, Cloudinary |
-| Hania Aisyatu Zahra | Membangun halaman Report Detail Page (/reports/:id), membangun halaman Report Submission Form (/create) | HTML, CSS, JavaScript, React.js, Vite |
-| Avatar Benedict Sengkey | Setup proyek React + Vite, membuat komponen Navbar dan Report Card, membangun halaman Public Report Listing (/reports) ( ?? beserta fitur Search & Filtering ) | HTML, CSS, JavaScript, React.js, Vite |
+| Hania Aisyatu Zahra | Membangun halaman Report Detail Page (/reports/:id), membangun halaman Report Submission Form (/create) | HTML, CSS, JavaScript, Tailwind, React.js, Vite |
+| Avatar Benedict Sengkey | Setup proyek React + Vite + Tailwind, membuat komponen Navbar dan Report Card, membangun halaman Public Report Listing (/reports) ( ?? beserta fitur Search & Filtering ) | HTML, CSS, JavaScript, Tailwind, React.js, Vite |
 
 ## 3. Linimasa Pengerjaan (Checkpoints)
 - **Checkpoint 1 (16 November 2026):** Inisialisasi repositori GitHub, setup lokal, `README.md`, perencanaan fitur, desain database, kontrak API, dan *mock data*.
