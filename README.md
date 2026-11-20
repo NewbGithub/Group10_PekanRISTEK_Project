@@ -7,13 +7,14 @@ A full-stack application enabling users to report and track lost or found items 
 | Peran | Fokus Tanggung Jawab (CP1 - CP3) | Tech Stack |
 | --- | --- | --- |
 | Gwein Antaresya Al Farabi | Desain database & Prisma schema, membuat REST API (`GET /reports`, `GET /reports/:id`, `POST /reports`), setup CORS, integrasi PostgreSQL & Cloudinary, serta deploy API. | Node.js, Express.js, PostgreSQL, Prisma ORM, Cloudinary |
-| Hania Aisyatu Zahra | Membangun halaman Report Detail Page (/reports/:id), membangun halaman Report Submission Form (/create) | HTML, CSS, JavaScript, React.js, Vite |
-| Avatar Benedict Sengkey | Setup proyek React + Vite, membuat komponen Navbar dan Report Card, membangun halaman Public Report Listing (/reports) ( ?? beserta fitur Search & Filtering ) | HTML, CSS, JavaScript, React.js, Vite |
+| Hania Aisyatu Zahra | Membangun halaman Report Detail Page (/reports/:id), membangun halaman Report Submission Form (/create) | HTML, CSS, JavaScript, Tailwind, React.js, Vite |
+| Avatar Benedict Sengkey | Setup proyek React + Vite + Tailwind, membuat komponen Navbar dan Report Card, membangun halaman Public Report Listing (/reports) beserta fitur Search & Filtering | HTML, CSS, JavaScript, Tailwind, React.js, Vite |
 
 ## 2. Daftar Halaman dan Fitur (Sesuai Perubahan Terbaru)
 
 | Halaman / Fitur | Rute URL (FE) | Status | Keterangan |
-| --- | --- | --- | --- |
+| --- | :--- | :--- | :--- |
+| Home | `/` | Wajib | Halaman utama aplikasi. |
 | Halaman Utama / List of reports | `/reports` | Wajib | Menampilkan seluruh laporan Lost dan Found secara publik. |
 | Report Detail Page | `/reports/:id` | Wajib | Halaman detail khusus untuk menampilkan informasi lengkap 1 laporan. |
 | Report Submission Form | `/create` | Wajib | Formulir kirim laporan Lost atau Found dengan opsi unggah foto. |
