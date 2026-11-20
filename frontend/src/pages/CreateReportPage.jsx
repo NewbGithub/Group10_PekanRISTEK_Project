@@ -8,7 +8,6 @@ export default function CreateReportPage() {
   const [reportType, setReportType] = useState("FOUND"); // "LOST" atau "FOUND"
   const [itemName, setItemName] = useState("");
   const [category, setCategory] = useState("");
-  const [date, setDate] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState(null);
@@ -30,34 +29,37 @@ export default function CreateReportPage() {
   };
 
   const handleRemovePhoto = (e) => {
-    e.preventDefault(); 
-    e.stopPropagation(); 
+    e.preventDefault();
+    e.stopPropagation();
     setPhoto(null);
     setPhotoPreview("");
   };
 
-  // Menangani saat user drag-and-drop foto ke kotak biru
+  // Menangani saat user drag-and-drop foto ke kotak upload
   const handleDrop = (e) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files?.[0];
     handleFileChange(droppedFile);
   };
 
-  // Menangani tombol Submit Report
+  // Menangani tombol Submit Report (tanggal otomatis terisi hari ini)
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const now = new Date();
+    const autoDate = now.toISOString().split("T")[0];
 
     const payload = {
       type: reportType,
       itemName,
       category,
-      date,
+      date: autoDate,
+      submittedAt: now.toISOString(),
       location,
       description,
       photoName: photo ? photo.name : null,
       reporterName,
       contact,
-      onlyVerified,
     };
 
     console.log("Data Laporan Siap Dikirim ke Backend:", payload);
@@ -66,7 +68,7 @@ export default function CreateReportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDF6E3] text-black py-10 px-4 sm:px-6">
+    <div className="min-h-screen bg-transparent text-black py-10 px-4 sm:px-6">
       <div className="max-w-2xl mx-auto">
         {/* Judul & Subjudul Atas */}
         <div className="text-center mb-6">
@@ -79,14 +81,14 @@ export default function CreateReportPage() {
           </p>
 
           {/* Pill Toggle: I LOST SOMETHING / I FOUND SOMETHING */}
-          <div className="mt-5 inline-flex items-center bg-[#DBEAFE] border-2 border-black rounded-full p-1 gap-1">
+          <div className="mt-5 inline-flex items-center bg-white border-2 border-black rounded-full shadow-[3px_3px_0px_#000] p-1 gap-1">
             <button
               type="button"
               onClick={() => setReportType("LOST")}
               className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase transition-all cursor-pointer ${
                 !isFound
                   ? "bg-black text-white"
-                  : "text-black hover:bg-blue-200/60"
+                  : "text-black hover:bg-gray-100"
               }`}
             >
               I lost something
@@ -97,7 +99,7 @@ export default function CreateReportPage() {
               className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase transition-all cursor-pointer ${
                 isFound
                   ? "bg-black text-white"
-                  : "text-black hover:bg-blue-200/60"
+                  : "text-black hover:bg-gray-100"
               }`}
             >
               I found something
@@ -121,46 +123,31 @@ export default function CreateReportPage() {
               value={itemName}
               onChange={(e) => setItemName(e.target.value)}
               placeholder="e.g. Black leather wallet"
-              className="w-full px-3.5 py-2.5 text-sm border-2 border-black rounded-xl focus:outline-none focus:bg-[#FEF9C3]"
+              className="w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100"
             />
           </div>
 
-          {/* CATEGORY & DATE FOUND/LOST (2 Kolom di Desktop, Tumpuk di HP) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
-                Category
-              </label>
-              <select
-                required
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm border-2 border-black rounded-xl bg-white focus:outline-none focus:bg-[#FEF9C3]"
-              >
-                <option value="" disabled>
-                  Select a category
-                </option>
-                <option value="Electronics">Electronics / Phone</option>
-                <option value="Food/Drink">Food / Drink</option>
-                <option value="Documents">ID Card / Documents</option>
-                <option value="Keys">Keys</option>
-                <option value="Wallet">Wallet</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
-                {isFound ? "Date Found" : "Date Lost"}
-              </label>
-              <input
-                type="date"
-                required
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm border-2 border-black rounded-xl bg-white focus:outline-none focus:bg-[#FEF9C3]"
-              />
-            </div>
+          {/* CATEGORY */}
+          <div>
+            <label className="block text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+              Category
+            </label>
+            <select
+              required
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-3.5 py-2.5 text-sm border-2 border-black rounded-xl bg-white focus:outline-none focus:bg-gray-100"
+            >
+              <option value="" disabled>
+                Select a category
+              </option>
+              <option value="Electronics">Electronics / Phone</option>
+              <option value="Food/Drink">Food / Drink</option>
+              <option value="Documents">ID Card / Documents</option>
+              <option value="Keys">Keys</option>
+              <option value="Wallet">Wallet</option>
+              <option value="Other">Other</option>
+            </select>
           </div>
 
           {/* WHERE WAS IT FOUND / LOST? */}
@@ -174,7 +161,7 @@ export default function CreateReportPage() {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Room number, floor"
-              className="w-full px-3.5 py-2.5 text-sm border-2 border-black rounded-xl focus:outline-none focus:bg-[#FEF9C3]"
+              className="w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100"
             />
           </div>
 
@@ -189,7 +176,7 @@ export default function CreateReportPage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Colour, brand, marks, what makes it identifiable..."
-              className="w-full px-3.5 py-2.5 text-sm border-2 border-black rounded-xl focus:outline-none focus:bg-[#FEF9C3] resize-none"
+              className="w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100 resize-none"
             />
           </div>
 
@@ -201,7 +188,7 @@ export default function CreateReportPage() {
             <label
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleDrop}
-              className="w-full min-h-[120px] bg-[#DBEAFE] hover:bg-[#bfdbfe] border-2 border-dashed border-black rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
+              className="w-full min-h-[120px] bg-gray-50 hover:bg-gray-100 border-2 border-dashed border-black rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
             >
               <input
                 type="file"
@@ -218,13 +205,13 @@ export default function CreateReportPage() {
                     className="max-h-32 mx-auto rounded-lg border-2 border-black object-cover"
                   />
                   <p className="text-xs font-bold">
-                    {photo?.name} (Klik untuk ganti foto)
+                    {photo?.name} <br /> (Klik untuk ganti foto)
                   </p>
                 </div>
               ) : (
                 <>
                   <span className="text-xs font-extrabold uppercase tracking-wide">
-                    Drag photos here or browse
+                    Drag photos here
                   </span>
                   <span className="text-[11px] text-gray-600 mt-1">
                     PNG or JPG, up to 5 MB each
@@ -237,7 +224,7 @@ export default function CreateReportPage() {
                 <button
                   type="button"
                   onClick={handleRemovePhoto}
-                  className="px-3 py-1 bg-[#FCA5A5] hover:bg-[#f87171] border-2 border-black rounded-lg shadow-[2px_2px_0px_#000] text-xs font-bold cursor-pointer"
+                  className="px-3 py-1 bg-white hover:bg-gray-100 border-2 border-black rounded-lg shadow-[2px_2px_0px_#000] text-xs font-bold cursor-pointer"
                 >
                   Hapus Foto
                 </button>
@@ -257,7 +244,7 @@ export default function CreateReportPage() {
                 value={reporterName}
                 onChange={(e) => setReporterName(e.target.value)}
                 placeholder="Full name"
-                className="w-full px-3.5 py-2.5 text-sm border-2 border-black rounded-xl focus:outline-none focus:bg-[#FEF9C3]"
+                className="w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100"
               />
             </div>
 
@@ -270,12 +257,8 @@ export default function CreateReportPage() {
                 required
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
-                placeholder={
-                  isFound
-                    ? "How should the owner reach you?"
-                    : "How should the finder reach you?"
-                }
-                className="w-full px-3.5 py-2.5 text-sm border-2 border-black rounded-xl focus:outline-none focus:bg-[#FEF9C3]"
+                placeholder="Your Contact"
+                className="w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100"
               />
             </div>
           </div>
@@ -284,7 +267,7 @@ export default function CreateReportPage() {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               type="submit"
-              className="px-6 py-3 bg-[#FF4D79] hover:bg-[#ff3366] active:translate-x-[2px] active:translate-y-[2px] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
+              className="px-6 py-3 bg-black text-white hover:bg-neutral-800 active:translate-x-[2px] active:translate-y-[2px] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
             >
               Submit Report
             </button>
@@ -292,7 +275,7 @@ export default function CreateReportPage() {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="px-6 py-3 bg-white hover:bg-gray-100 active:translate-x-[2px] active:translate-y-[2px] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
+              className="px-6 py-3 bg-white text-black hover:bg-gray-100 active:translate-x-[2px] active:translate-y-[2px] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
             >
               Cancel
             </button>

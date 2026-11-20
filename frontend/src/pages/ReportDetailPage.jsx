@@ -12,15 +12,15 @@ const DUMMY_REPORTS = [
     location: "Gedung Baru Fasilkom UI, Lt. 2 Ruang A2.51",
     date: "Mon, 16 November 2026",
     reporterName: "Agus",
-    reporterBadge: "Verified Fasilkom student",
+    reporterVerification: "Verified Fasilkom student",
     description:
       "Ditemukan di meja baris depan Ruang A2.51 Gedung Baru Fasilkom UI setelah kelas selesai. Dompet kulit warna hitam dengan sedikit goresan di bagian depan. Berisi KTM dan beberapa kartu — detail isinya disimpan supaya pemilik asli bisa memverifikasi.",
     contact: "WA: 0812-3456-7890",
     photos: [
-      { id: 1, bgColor: "bg-[#FACC15]", url: "" },
-      { id: 2, bgColor: "bg-[#6EE7B7]", url: "" },
-      { id: 3, bgColor: "bg-[#3B82F6]", url: "" },
-      { id: 4, bgColor: "bg-[#F9A8D4]", url: "" },
+      { id: 1, bgColor: "bg-gray-100", url: "" },
+      { id: 2, bgColor: "bg-gray-100", url: "" },
+      { id: 3, bgColor: "bg-gray-100", url: "" },
+      { id: 4, bgColor: "bg-gray-100", url: "" },
     ],
   },
   {
@@ -32,11 +32,11 @@ const DUMMY_REPORTS = [
     location: "Gedung Lama Fasilkom UI, Perpustakaan Lt. 1",
     date: "Thu, 19 November 2026",
     reporterName: "Budi Santoso",
-    reporterBadge: "Verified Fasilkom student",
+    reporterVerification: "Verified Fasilkom student",
     description:
       "Tertinggal di meja baca dekat colokan Perpustakaan Fasilkom UI lantai 1. Botol warna hitam doff dengan stiker RISTEK kecil di bagian bawah.",
     contact: "LINE: budi_cs24",
-    photos: [{ id: 1, bgColor: "bg-[#FACC15]", url: "" }],
+    photos: [{ id: 1, bgColor: "bg-gray-100", url: "" }],
   },
 ];
 
@@ -83,7 +83,7 @@ export default function ReportDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDF6E3] text-black py-8 px-4 sm:px-8">
+    <div className="min-h-screen bg-transparent text-black py-8 px-4 sm:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* KOLOM KIRI: Foto Utama + Foto Tambahan + About this item */}
@@ -94,7 +94,7 @@ export default function ReportDetailPage() {
                 mainPhoto &&
                 setPopOutPhoto({ ...mainPhoto, title: "PHOTO 1" })
               }
-              className="w-full h-72 sm:h-96 bg-[#FACC15] border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] overflow-hidden flex items-center justify-center cursor-pointer group relative"
+              className="w-full h-72 sm:h-96 bg-gray-100 border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] overflow-hidden flex items-center justify-center cursor-pointer group relative"
             >
               {mainPhoto?.url ? (
                 <img
@@ -122,7 +122,7 @@ export default function ReportDetailPage() {
                         setPopOutPhoto({ ...item, title: photoTitle })
                       }
                       className={`w-20 h-20 sm:w-24 sm:h-24 ${
-                        item.bgColor || "bg-[#6EE7B7]"
+                        item.bgColor || "bg-gray-100"
                       } border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] overflow-hidden flex items-center justify-center transition-all cursor-pointer`}
                     >
                       {item.url ? (
@@ -158,7 +158,7 @@ export default function ReportDetailPage() {
             <div>
               <span
                 className={`inline-block px-3 py-1 text-xs font-bold uppercase border-2 border-black rounded-md ${
-                  isFound ? "bg-[#6EE7B7]" : "bg-[#FCA5A5]"
+                  isFound ? "bg-black text-white" : "bg-white text-black"
                 }`}
               >
                 {report.type}
@@ -191,14 +191,16 @@ export default function ReportDetailPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#FF4D79] border-2 border-black flex items-center justify-center font-bold text-sm shrink-0">
+              <div className="w-10 h-10 rounded-full bg-gray-100 border-2 border-black flex items-center justify-center font-bold text-sm shrink-0">
                 {report.reporterName?.charAt(0).toUpperCase() || "A"}
               </div>
               <div>
                 <p className="text-sm font-bold leading-tight">
                   {report.reporterName}
                 </p>
-                <p className="text-xs text-gray-500">{report.reporterBadge}</p>
+                <p className="text-xs text-gray-500">
+                  {report.reporterVerification}
+                </p>
               </div>
             </div>
 
@@ -206,7 +208,7 @@ export default function ReportDetailPage() {
               <button
                 type="button"
                 onClick={() => setShowClaimInfo(!showClaimInfo)}
-                className="w-full py-3 px-4 bg-[#FF4D79] hover:bg-[#ff3366] active:translate-x-[2px] active:translate-y-[2px] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] font-bold text-sm transition-all cursor-pointer"
+                className="w-full py-3 px-4 bg-black text-white hover:bg-neutral-800 active:translate-x-[2px] active:translate-y-[2px] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] font-bold text-sm transition-all cursor-pointer"
               >
                 {isFound
                   ? "This is mine — start a claim"
@@ -214,12 +216,12 @@ export default function ReportDetailPage() {
               </button>
 
               {showClaimInfo && (
-                <div className="p-3 bg-[#FEF3C7] border-2 border-black rounded-xl flex items-center justify-between gap-2 text-xs sm:text-sm">
+                <div className="p-3 bg-gray-100 border-2 border-black rounded-xl flex items-center justify-between gap-2 text-xs sm:text-sm">
                   <span className="font-bold break-all">{report.contact}</span>
                   <button
                     type="button"
                     onClick={handleCopyContact}
-                    className="shrink-0 px-2.5 py-1 bg-white border-2 border-black rounded-lg font-bold text-xs hover:bg-gray-100 cursor-pointer"
+                    className="shrink-0 px-2.5 py-1 bg-white border-2 border-black rounded-lg font-bold text-xs hover:bg-gray-200 cursor-pointer"
                   >
                     {copiedContact ? "Copied!" : "Copy"}
                   </button>
@@ -229,13 +231,13 @@ export default function ReportDetailPage() {
               <button
                 type="button"
                 onClick={handleShareReport}
-                className="w-full py-3 px-4 bg-white hover:bg-gray-50 active:translate-x-[2px] active:translate-y-[2px] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] font-bold text-sm transition-all cursor-pointer"
+                className="w-full py-3 px-4 bg-white text-black hover:bg-gray-100 active:translate-x-[2px] active:translate-y-[2px] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] font-bold text-sm transition-all cursor-pointer"
               >
                 {copiedLink ? "Report link copied!" : "Share this report"}
               </button>
             </div>
 
-            <div className="bg-[#DBEAFE] border-2 border-black rounded-xl p-3.5 text-xs space-y-1">
+            <div className="bg-gray-50 border-2 border-black rounded-xl p-3.5 text-xs space-y-1">
               <p className="font-bold text-black">Safety tip</p>
               <p className="text-gray-800 leading-relaxed">
                 Meet in a public place and verify ownership before handing
@@ -256,14 +258,14 @@ export default function ReportDetailPage() {
             onClick={(e) => e.stopPropagation()}
             className="relative max-w-2xl w-full bg-white border-2 border-black rounded-2xl shadow-[6px_6px_0px_#000] overflow-hidden"
           >
-            <div className="flex items-center justify-between px-4 py-3 bg-[#FDF6E3] border-b-2 border-black">
+            <div className="flex items-center justify-between px-4 py-3 bg-white border-b-2 border-black">
               <span className="text-xs font-extrabold uppercase tracking-wider">
                 {popOutPhoto.title}
               </span>
               <button
                 type="button"
                 onClick={() => setPopOutPhoto(null)}
-                className="px-2.5 py-1 bg-[#FCA5A5] hover:bg-[#f87171] border-2 border-black rounded-lg text-xs font-extrabold cursor-pointer"
+                className="px-2.5 py-1 bg-white hover:bg-gray-100 border-2 border-black rounded-lg text-xs font-extrabold cursor-pointer"
               >
                 ✕ Close
               </button>
@@ -271,7 +273,7 @@ export default function ReportDetailPage() {
 
             <div
               className={`w-full h-80 sm:h-[450px] ${
-                popOutPhoto.bgColor || "bg-[#FACC15]"
+                popOutPhoto.bgColor || "bg-gray-100"
               } flex items-center justify-center`}
             >
               {popOutPhoto.url ? (
