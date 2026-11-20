@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
-// Data dummy lingkungan Fasilkom UI (contoh id 1 punya 4 foto, id 2 cuma 1 foto)
+// Data dummy, digantikan data back-end nantinya
 const DUMMY_REPORTS = [
   {
     id: 1,
@@ -47,9 +47,15 @@ export default function ReportDetailPage() {
   const [copiedContact, setCopiedContact] = useState(false);
   const [popOutPhoto, setPopOutPhoto] = useState(null);
 
-  const report =
-    DUMMY_REPORTS.find((item) => String(item.id) === String(id)) ||
-    DUMMY_REPORTS[0];
+  const report = DUMMY_REPORTS.find((item) => String(item.id) === String(id));
+
+  if (!report) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="font-bold">Report not found.</p>
+      </div>
+    );
+  }
 
   const isFound = report.type?.toUpperCase() === "FOUND";
 
@@ -63,7 +69,7 @@ export default function ReportDetailPage() {
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2000);
     } catch {
-      alert("Gagal menyalin link laporan.");
+      alert("Failed to copy the report link.");
     }
   };
 
@@ -78,7 +84,7 @@ export default function ReportDetailPage() {
       setCopiedContact(true);
       setTimeout(() => setCopiedContact(false), 2000);
     } catch {
-      alert("Gagal menyalin kontak.");
+      alert("Failed to copy the contact.");
     }
   };
 
@@ -109,7 +115,7 @@ export default function ReportDetailPage() {
               )}
             </div>
 
-            {/* Foto Tambahan: HANYA muncul kalau total foto >= 2 (label: PHOTO 2, PHOTO 3, dst.) */}
+            {/* Foto Tambahan */}
             {extraPhotos.length > 0 && (
               <div className="flex flex-wrap gap-3">
                 {extraPhotos.map((item, idx) => {
@@ -121,9 +127,8 @@ export default function ReportDetailPage() {
                       onClick={() =>
                         setPopOutPhoto({ ...item, title: photoTitle })
                       }
-                      className={`w-20 h-20 sm:w-24 sm:h-24 ${
-                        item.bgColor || "bg-gray-100"
-                      } border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] overflow-hidden flex items-center justify-center transition-all cursor-pointer`}
+                      className={`w-20 h-20 sm:w-24 sm:h-24 ${item.bgColor || "bg-gray-100"
+                        } border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] overflow-hidden flex items-center justify-center transition-all cursor-pointer`}
                     >
                       {item.url ? (
                         <img
@@ -142,7 +147,7 @@ export default function ReportDetailPage() {
               </div>
             )}
 
-            {/* Kotak Deskripsi: About this item */}
+            {/* Deskripsi Item */}
             <div className="bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] p-5 sm:p-6">
               <h2 className="text-base sm:text-lg font-bold mb-2">
                 About this item
@@ -153,13 +158,12 @@ export default function ReportDetailPage() {
             </div>
           </div>
 
-          {/* KOLOM KANAN: Kartu Detail, Tombol Klaim, Share, & Safety Tip */}
+          {/* KOLOM KANAN: Kartu Detail, Tombol Klaim, Share, dan Safety Tip */}
           <div className="lg:col-span-5 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] p-5 sm:p-6 space-y-5">
             <div>
               <span
-                className={`inline-block px-3 py-1 text-xs font-bold uppercase border-2 border-black rounded-md ${
-                  isFound ? "bg-black text-white" : "bg-white text-black"
-                }`}
+                className={`inline-block px-3 py-1 text-xs font-bold uppercase border-2 border-black rounded-md ${isFound ? "bg-black text-white" : "bg-white text-black"
+                  }`}
               >
                 {report.type}
               </span>
@@ -248,7 +252,7 @@ export default function ReportDetailPage() {
         </div>
       </div>
 
-      {/* MODAL POP-OUT FOTO */}
+      {/* POP-OUT FOTO */}
       {popOutPhoto && (
         <div
           onClick={() => setPopOutPhoto(null)}
@@ -272,9 +276,8 @@ export default function ReportDetailPage() {
             </div>
 
             <div
-              className={`w-full h-80 sm:h-[450px] ${
-                popOutPhoto.bgColor || "bg-gray-100"
-              } flex items-center justify-center`}
+              className={`w-full h-80 sm:h-[450px] ${popOutPhoto.bgColor || "bg-gray-100"
+                } flex items-center justify-center`}
             >
               {popOutPhoto.url ? (
                 <img

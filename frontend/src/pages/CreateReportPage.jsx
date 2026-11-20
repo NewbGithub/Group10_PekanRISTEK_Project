@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const inputClass =
+  "w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100";
+
 export default function CreateReportPage() {
   const navigate = useNavigate();
 
@@ -18,10 +21,15 @@ export default function CreateReportPage() {
   const isFound = reportType === "FOUND";
 
   // Menangani pemilihan file foto + validasi max 5MB
+
   const handleFileChange = (file) => {
     if (!file) return;
+    if (!["image/png", "image/jpeg"].includes(file.type)) {
+      alert("File must PNG or JPG")
+      return;
+    }
     if (file.size > 5 * 1024 * 1024) {
-      alert("Ukuran foto maksimal 5 MB ya!");
+      alert("Photo must be 5 MB or smaller");
       return;
     }
     setPhoto(file);
@@ -30,7 +38,6 @@ export default function CreateReportPage() {
 
   const handleRemovePhoto = (e) => {
     e.preventDefault();
-    e.stopPropagation();
     setPhoto(null);
     setPhotoPreview("");
   };
@@ -47,7 +54,7 @@ export default function CreateReportPage() {
     e.preventDefault();
 
     const now = new Date();
-    const autoDate = now.toISOString().split("T")[0];
+    const autoDate = now.toLocaleDateString("en-CA");
 
     const payload = {
       type: reportType,
@@ -62,8 +69,8 @@ export default function CreateReportPage() {
       contact,
     };
 
-    console.log("Data Laporan Siap Dikirim ke Backend:", payload);
-    alert(`Laporan "${itemName}" berhasil dibuat!`);
+    console.log("Report data ready to be sent to BackEnd:", payload);
+    alert(`Report "${itemName}" submitted successfully`);
     navigate("/reports");
   };
 
@@ -85,22 +92,20 @@ export default function CreateReportPage() {
             <button
               type="button"
               onClick={() => setReportType("LOST")}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase transition-all cursor-pointer ${
-                !isFound
+              className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase transition-all cursor-pointer ${!isFound
                   ? "bg-black text-white"
                   : "text-black hover:bg-gray-100"
-              }`}
+                }`}
             >
               I lost something
             </button>
             <button
               type="button"
               onClick={() => setReportType("FOUND")}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase transition-all cursor-pointer ${
-                isFound
+              className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase transition-all cursor-pointer ${isFound
                   ? "bg-black text-white"
                   : "text-black hover:bg-gray-100"
-              }`}
+                }`}
             >
               I found something
             </button>
@@ -123,7 +128,7 @@ export default function CreateReportPage() {
               value={itemName}
               onChange={(e) => setItemName(e.target.value)}
               placeholder="e.g. Black leather wallet"
-              className="w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100"
+              className={inputClass}
             />
           </div>
 
@@ -136,7 +141,7 @@ export default function CreateReportPage() {
               required
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-sm border-2 border-black rounded-xl bg-white focus:outline-none focus:bg-gray-100"
+              className={inputClass}
             >
               <option value="" disabled>
                 Select a category
@@ -161,7 +166,7 @@ export default function CreateReportPage() {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Room number, floor"
-              className="w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100"
+              className={inputClass}
             />
           </div>
 
@@ -176,7 +181,7 @@ export default function CreateReportPage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Colour, brand, marks, what makes it identifiable..."
-              className="w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100 resize-none"
+              className={`${inputClass} resize-none`}
             />
           </div>
 
@@ -205,7 +210,7 @@ export default function CreateReportPage() {
                     className="max-h-32 mx-auto rounded-lg border-2 border-black object-cover"
                   />
                   <p className="text-xs font-bold">
-                    {photo?.name} <br /> (Klik untuk ganti foto)
+                    {photo?.name} <br /> (Click to change photo)
                   </p>
                 </div>
               ) : (
@@ -226,7 +231,7 @@ export default function CreateReportPage() {
                   onClick={handleRemovePhoto}
                   className="px-3 py-1 bg-white hover:bg-gray-100 border-2 border-black rounded-lg shadow-[2px_2px_0px_#000] text-xs font-bold cursor-pointer"
                 >
-                  Hapus Foto
+                  Remove Photo
                 </button>
               </div>
             )}
@@ -244,7 +249,7 @@ export default function CreateReportPage() {
                 value={reporterName}
                 onChange={(e) => setReporterName(e.target.value)}
                 placeholder="Full name"
-                className="w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100"
+                className={inputClass}
               />
             </div>
 
@@ -258,7 +263,7 @@ export default function CreateReportPage() {
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
                 placeholder="Your Contact"
-                className="w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100"
+                className={inputClass}
               />
             </div>
           </div>
