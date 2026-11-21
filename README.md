@@ -19,29 +19,48 @@ A full-stack application enabling users to report and track lost or found items 
 | Report Detail Page | `/reports/:id` | Wajib | Halaman detail khusus untuk menampilkan informasi lengkap 1 laporan. |
 | Report Submission Form | `/create` | Wajib | Formulir kirim laporan Lost atau Found dengan opsi unggah foto. |
 | Search & Filtering | `/reports` (Query) | Opsional | Cari nama barang & filter tipe/kategori/lokasi (dikerjakan jika waktu cukup). |
-| Image Placeholder & Contact Privacy | - | Dihapus | Tidak perlu gambar default jika foto kosong, dan kontak langsung ditampilkan apa adanya. |
+| Image Placeholder & Contact Privacy | - | Wajib | Jika `imageUrl` bernilai `null`, frontend menampilkan placeholder. API hanya mengembalikan kontak publik yang dipilih pelapor (`contact.method` + `contact.value`). |
 
 ## 3. Desain Database (Tabel Report)
 
+Schema mengikuti backend: lihat `lostfound-backend/docs/DATABASE_DESIGN.md` sebagai **source of truth**.
+
 | Nama Field | Tipe Data (Prisma/DB) | Sifat | Keterangan |
 | --- | --- | --- | --- |
-| `id` | Int (Primary Key) | Wajib (Auto) | ID unik laporan (auto-increment). |
+| `id` | `String` (UUID, Primary Key) | Wajib (Auto) | ID unik laporan berupa **UUID string**, bukan integer. |
 | `type` | Enum (`LOST` / `FOUND`) | Wajib | Jenis laporan: barang hilang atau ditemukan. |
-| `itemName` | String | Wajib | Nama barang yang hilang atau ditemukan. |
-| `category` | String | Wajib | Kategori barang (Elektronik, Dokumen/KTM, Alat Makan & Minum, dll.). |
-| `location` | String | Wajib | Lokasi terakhir barang terlihat atau ditemukan. |
-| `description` | String | Wajib | Deskripsi ciri barang dan kronologi singkat. |
-| `imageUrl` | String? (Nullable) | Opsional | Link foto dari Cloudinary; bernilai null jika tidak ada foto. |
-| `contact` | String | Wajib | Kontak pelapor yang bisa dihubungi (WA / LINE / Instagram). |
-| `createdAt` | DateTime | Wajib (Auto) | Waktu laporan dibuat. |
+| `itemName` | `String` (VarChar 100) | Wajib | Nama barang, 3–100 karakter. |
+| `description` | `String` (VarChar 1000) | Wajib | Deskripsi ciri barang dan kronologi, 10–1000 karakter. |
+| `categoryId` | `Int` (FK ke `Category`) | Wajib | API mengembalikan `category: { slug, name }`. |
+| `locationId` | `Int` (FK ke `Location`) | Wajib | API mengembalikan `location: { slug, name }`. |
+| `locationDetail` | `String?` (VarChar 100) | Opsional | Detail lokasi, mis. "Ruang A206". |
+| `eventDate` | `DateTime` (`DATE`) | Wajib | Tanggal barang hilang/ditemukan, format `YYYY-MM-DD`, tidak boleh di masa depan. |
+| `imageUrl` | `String?` (Nullable) | Opsional | Link foto dari Cloudinary; `null` berarti tidak ada foto dan frontend menampilkan placeholder. |
+| `imagePublicId` | `String?` | Opsional | ID Cloudinary untuk cleanup; **tidak pernah** dikembalikan API. |
+| `reporterName` | `String` (VarChar 60) | Wajib | Nama pelapor, 2–60 karakter. |
+| `contactWhatsapp` / `contactInstagram` / `contactLine` / `contactEmail` | `String?` | Salah satu wajib | Hanya kontak yang dipilih di `publicContactMethod` yang harus diisi. |
+| `publicContactMethod` | Enum (`WHATSAPP` / `INSTAGRAM` / `LINE` / `EMAIL`) | Wajib | API mengembalikan `contact: { method, value }`. |
+| `createdAt` | `DateTime` | Wajib (Auto) | Waktu laporan dibuat. |
+| `updatedAt` | `DateTime` | Wajib (Auto) | Waktu laporan terakhir diubah. |
 
 ## 4. Kontrak REST API
 
+Kontrak lengkap: `lostfound-backend/docs/API_CONTRACT.md`. Ringkasan endpoint yang dipakai frontend:
+
 | Metode HTTP | Endpoint | Kegunaan | Format Request (Body / Query) | Format Response Sukses |
 | --- | --- | --- | --- | --- |
-| `GET` | `/reports` | Ambil semua daftar laporan | Opsional Query: `?search=...&type=...&category=...&location=...` | `200 OK` — `{ "status": "success", "data": [ ... ] }` |
-| `GET` | `/reports/:id` | Ambil detail 1 laporan spesifik | URL Param: `id` (angka ID laporan) | `200 OK` — `{ "status": "success", "data": { ... } }` |
-| `POST` | `/reports` | Kirim laporan baru | `multipart/form-data` (`type`, `itemName`, `category`, `location`, `description`, `contact`, dan `image` [opsional]) | `201 Created` — `{ "status": "success", "data": { ... } }` |
+| `GET` | `/reports` | Ambil daftar laporan (newest first) | Query opsional: `?q=...&type=...&category=<slug>&location=<slug>&page=1&limit=10&sort=newest` | `200 OK` — `{ "success": true, "data": [ ... ], "meta": { "pagination": { ... } } }` |
+| `GET` | `/reports/:id` | Ambil detail 1 laporan | URL Param: `id` (UUID string) | `200 OK` — `{ "success": true, "data": { ... } }` |
+| `POST` | `/reports` | Kirim laporan baru | `multipart/form-data` (`type`, `itemName`, `description`, `category`, `location`, `locationDetail`, `eventDate`, `reporterName`, `contactWhatsapp`/`contactInstagram`/`contactLine`/`contactEmail`, `publicContactMethod`, dan `image` [opsional]) | `201 Created` — `{ "success": true, "data": { ... } }` |
+
+Catatan frontend:
+
+- Pencarian memakai `q`, bukan `search`.
+- `category` dan `location` adalah **slug**, bukan nama tampilan (mis. `electronics`, `gedung-a`).
+- Pagination dibaca dari `meta.pagination.totalItems` / `meta.pagination.totalPages`.
+- URL frontend memakai **slug** untuk kategori dan lokasi (`?categories=keys&location=gedung-a`); daftar slug/name diambil dari `GET /categories` dan `GET /locations` via `useReferenceData()`, dengan fallback lokal dari `mock-data/meta.json`.
+- `?dateRange=` tetap filter client-side (backend belum punya parameter ini); multi-kategori digabung client-side karena backend hanya menerima satu `category`.
+- Variabel environment frontend: `VITE_API_BASE_URL` (default `http://localhost:3000`) dan `VITE_USE_MOCK` (default `true`).
 
 ## 5. Daftar HTTP Status Codes
 
@@ -49,14 +68,19 @@ A full-stack application enabling users to report and track lost or found items 
 | --- | --- | --- |
 | `200` | OK | Permintaan `GET /reports` atau `GET /reports/:id` berhasil diambil. |
 | `201` | Created | Laporan baru lewat `POST /reports` berhasil dibuat dan disimpan. |
-| `400` | Bad Request | Data form yang dikirim tidak lengkap atau format file foto tidak valid. |
-| `404` | Not Found | ID laporan yang dicari pada `GET /reports/:id` tidak ditemukan. |
+| `400` | Bad Request | Validasi body/query gagal (mis. `type=ABC`, `page=0`, field tidak lengkap). |
+| `404` | Not Found | ID laporan tidak ditemukan / bukan UUID valid, atau route tidak dikenal. |
+| `413` | Payload Too Large | File gambar lebih dari 5 MB. |
+| `415` | Unsupported Media Type | File gambar bukan JPEG/PNG/WEBP. |
 | `500` | Internal Server Error | Terjadi gangguan di server Backend, database, atau Cloudinary. |
 
 ## 6. MVP (Minimum Viable Product)
 ...
 
 ## 7. Mock Data
+
+Sumber data bersama ada di `lostfound-backend/mock-data/reports.json` dan disalin persis ke `frontend/src/data/mockReports.json`. File `meta.json` berisi daftar kategori, lokasi, tipe laporan, dan metode kontak.
+
 ```[
   {
     "id": "a1b2c3d4-0000-4000-8000-000000000001",
@@ -97,7 +121,7 @@ A full-stack application enabling users to report and track lost or found items 
     },
     "locationDetail": null,
     "eventDate": "2026-11-15",
-    "imageUrl": "https://res.cloudinary.com/demo/image/upload/sample.jpg",
+    "imageUrl": null,
     "reporterName": "Dimas",
     "contact": {
       "method": "INSTAGRAM",
@@ -145,7 +169,7 @@ A full-stack application enabling users to report and track lost or found items 
     },
     "locationDetail": null,
     "eventDate": "2026-11-14",
-    "imageUrl": "https://res.cloudinary.com/demo/image/upload/cld-sample.jpg",
+    "imageUrl": null,
     "reporterName": "Fajar",
     "contact": {
       "method": "WHATSAPP",
@@ -217,7 +241,7 @@ A full-stack application enabling users to report and track lost or found items 
     },
     "locationDetail": "Rak sepatu",
     "eventDate": "2026-11-11",
-    "imageUrl": "https://res.cloudinary.com/demo/image/upload/sample.jpg",
+    "imageUrl": null,
     "reporterName": "Rina",
     "contact": {
       "method": "INSTAGRAM",
@@ -265,7 +289,7 @@ A full-stack application enabling users to report and track lost or found items 
     },
     "locationDetail": "Lobby lantai 1",
     "eventDate": "2026-11-10",
-    "imageUrl": "https://res.cloudinary.com/demo/image/upload/cld-sample.jpg",
+    "imageUrl": null,
     "reporterName": "Tari",
     "contact": {
       "method": "WHATSAPP",

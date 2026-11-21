@@ -46,46 +46,13 @@ body {
   min-height: 100vh;
 }
 
-h1,
-h2,
-h3 {
-  color: var(--text-h);
-  line-height: 1.25;
-}
-
-a {
-  color: var(--accent);
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 1.5rem;
-}
-
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.navbar-brand {
-  color: var(--text-h);
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.navbar-action {
-  font-weight: 600;
-  text-decoration: none;
+@layer base {
+  h1,
+  h2,
+  h3 {
+    color: var(--text-h);
+    line-height: 1.25;
+  }
 }
 
 a:focus-visible,

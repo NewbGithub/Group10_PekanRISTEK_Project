@@ -1,70 +1,72 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { getReports } from '../services/reportService';
 import ReportCard from '../components/ReportCard';
-
-const CATEGORIES = ['Elektronik', 'Dokumen/KTM', 'Alat Makan & Minum', 'Kunci & Aksesori'];
+import useReferenceData from '../hooks/useReferenceData';
 
 export default function HomePage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [locationFilter, setLocationFilter] = useState('ALL');
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [error, setError] = useState(null);
+  const location = useLocation();
+  const { categories: categoryOptions } = useReferenceData();
 
   useEffect(() => {
-    getReports().then((data) => {
-      setReports(data);
-      setLoading(false);
-    });
+    let cancelled = false;
+    const fetchRecent = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await getReports({ limit: 4 });
+        if (!cancelled) {
+          setReports(result.reports);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err.message || 'Failed to load reports.');
+          setLoading(false);
+        }
+      }
+    };
+    fetchRecent();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const uniqueLocations = ['ALL', ...new Set(reports.map((r) => r.location).filter(Boolean))];
+  // Hash scrolling
+  useEffect(() => {
+    if (location.hash === '#how-it-works') {
+      const el = document.getElementById('how-it-works');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [location.hash]);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (searchQuery.trim()) params.set('search', searchQuery.trim());
-    if (locationFilter !== 'ALL') params.set('location', locationFilter);
-    navigate(`/reports?${params.toString()}`);
+  const handleRetry = () => {
+    window.location.reload();
   };
 
-  const sortedReports = [...reports].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  const recentReports = sortedReports.slice(0, 4);
-
-  if (loading) return <p className="font-body text-gray-500">Memuat...</p>;
+  const sortedReports = [...reports].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+  );
 
   return (
     <div className="flex flex-col min-h-0">
       <section className="bg-gray-100 border-b border-gray-300 py-14 px-4">
         <div className="max-w-3xl mx-auto text-left md:text-center">
-          <h1 className="font-headline text-3xl text-gray-900 mb-3">Lost something? Let's find it.</h1>
+          <h1 className="font-headline text-3xl text-gray-900 mb-3">
+            Lost something? Let's find it.
+          </h1>
           <p className="font-body text-gray-600 mt-3 text-sm mb-6">
             Search reported items or post your own. Our community helps lost belongings find their way home.
           </p>
-          <form onSubmit={handleSearch} className="mt-6 flex flex-col sm:flex-row items-stretch gap-2 border border-gray-300 rounded-lg bg-white overflow-hidden">
-            <input
-              type="text"
-              className="font-body w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-sm text-gray-800 focus:outline-none md:border-0 md:border-r border-gray-300 md:rounded-none md:flex-1"
-              placeholder="What did you lose or find?"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <select
-              value={locationFilter}
-              onChange={(e) => setLocationFilter(e.target.value)}
-              className="font-body hidden md:block px-4 py-3 border-r border-gray-300 bg-gray-50 text-sm text-gray-800 focus:outline-none"
-            >
-              {uniqueLocations.map((loc) => (
-                <option key={loc} value={loc}>
-                  {loc === 'ALL' ? 'All Locations' : loc}
-                </option>
-              ))}
-            </select>
-            <button type="submit" className="font-ui w-full md:w-auto px-6 py-3 bg-pink-500 text-white rounded-lg md:rounded-none font-semibold tracking-wider hover:bg-pink-600">
-              Search
-            </button>
-          </form>
+          <Link
+            to="/reports"
+            className="font-ui w-full md:w-auto px-5 py-3 bg-pink-500 text-white rounded-lg font-semibold tracking-wider text-center text-sm hover:bg-pink-600 block"
+          >
+            Browse All Reports
+          </Link>
           <div className="mt-4 flex flex-col gap-3 md:flex-row md:justify-center">
             <Link
               to="/create?type=LOST"
@@ -88,13 +90,16 @@ export default function HomePage() {
             BROWSE BY CATEGORY
           </span>
           <div className="flex flex-nowrap md:flex-wrap gap-2 overflow-x-auto pb-1">
-            {CATEGORIES.map((cat) => (
+            {categoryOptions.map(({ slug, name }) => (
               <Link
-                key={cat}
-                to={`/reports?category=${cat}`}
+                key={slug}
+                to={{
+                  pathname: '/reports',
+                  search: `?categories=${encodeURIComponent(slug)}`,
+                }}
                 className="font-ui shrink-0 px-3 py-1 bg-white border border-gray-300 rounded-md text-xs font-semibold tracking-wider text-gray-800 hover:bg-gray-100 whitespace-nowrap"
               >
-                {cat}
+                {name}
               </Link>
             ))}
           </div>
@@ -109,9 +114,29 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {recentReports.map((report) => (
-            <ReportCard key={report.id} report={report} stackedOnMobile />
-          ))}
+          {loading ? (
+            <p className="font-body text-sm text-gray-500 col-span-full py-8 text-center">
+              Loading reports...
+            </p>
+          ) : error ? (
+            <div className="col-span-full text-center py-8">
+              <p className="font-body text-red-600 text-sm mb-4">{error}</p>
+              <button
+                onClick={handleRetry}
+                className="font-ui text-sm border border-gray-300 px-4 py-2 rounded font-semibold tracking-wider text-gray-700 bg-white hover:bg-gray-50"
+              >
+                Retry
+              </button>
+            </div>
+          ) : sortedReports.length === 0 ? (
+            <p className="font-body text-sm text-gray-500 col-span-full py-8 text-center">
+              No reports yet.
+            </p>
+          ) : (
+            sortedReports.map((report) => (
+              <ReportCard key={report.id} report={report} layout="top" />
+            ))
+          )}
         </div>
       </section>
 

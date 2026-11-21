@@ -1,16 +1,29 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ReportListPage from './pages/ReportListPage';
 import ReportDetailPage from './pages/ReportDetailPage';
 import CreateReportPage from './pages/CreateReportPage';
 import HomePage from './pages/HomePage';
 
+function ScrollToTop() {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    // Hash links are handled by the page that owns the target section.
+    if (!hash) window.scrollTo(0, 0);
+  }, [pathname, hash]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="flex-1 max-w-1100 mx-auto p-4">
+        <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-4">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/reports" element={<ReportListPage />} />
