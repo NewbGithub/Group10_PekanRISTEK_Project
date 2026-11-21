@@ -1,348 +1,125 @@
-# Community Issue / Lost & Found Reporting System
+# 🔎 Pacil Lost & Found — Backend
 
-A full-stack application enabling users to report and track lost or found items with photo uploads and category filtering.
+A Lost & Found website for Fasilkom UI (Pacil) students, built for the **RISTEK Open Class Web Development 2026 Final Project**.
+This repository contains the **Backend** (Express.js, PostgreSQL, Prisma, Cloudinary) and the shared planning documents.
 
-## 1. Pembagian Tugas, Tim, dan Tech Stack
+> **Current status: Checkpoints 1-3 implemented (planning, working API, PostgreSQL + Cloudinary).**
 
-| Peran | Fokus Tanggung Jawab (CP1 - CP3) | Tech Stack |
-| --- | --- | --- |
-| Gwein Antaresya Al Farabi | Desain database & Prisma schema, membuat REST API (`GET /reports`, `GET /reports/:id`, `POST /reports`), setup CORS, integrasi PostgreSQL & Cloudinary, serta deploy API. | Node.js, Express.js, PostgreSQL, Prisma ORM, Cloudinary |
-| Hania Aisyatu Zahra | Membangun halaman Report Detail Page (/reports/:id), membangun halaman Report Submission Form (/create) | HTML, CSS, JavaScript, React.js, Vite |
-| Avatar Benedict Sengkey | Setup proyek React + Vite, membuat komponen Navbar dan Report Card, membangun halaman Public Report Listing (/reports) ( ?? beserta fitur Search & Filtering ) | HTML, CSS, JavaScript, React.js, Vite |
+## 👥 Team
 
-## 2. Daftar Halaman dan Fitur (Sesuai Perubahan Terbaru)
+| Name | Role | GitHub |
+|------|------|--------|
+| `<Backend name>` | Backend Developer | `@username` |
+| `<Frontend name 1>` | Frontend Developer | `@username` |
+| `<Frontend name 2>` | Frontend Developer | `@username` |
 
-| Halaman / Fitur | Rute URL (FE) | Status | Keterangan |
-| --- | --- | --- | --- |
-| Halaman Utama / List of reports | `/reports` | Wajib | Menampilkan seluruh laporan Lost dan Found secara publik. |
-| Report Detail Page | `/reports/:id` | Wajib | Halaman detail khusus untuk menampilkan informasi lengkap 1 laporan. |
-| Report Submission Form | `/create` | Wajib | Formulir kirim laporan Lost atau Found dengan opsi unggah foto. |
-| Search & Filtering | `/reports` (Query) | Opsional | Cari nama barang & filter tipe/kategori/lokasi (dikerjakan jika waktu cukup). |
-| Image Placeholder & Contact Privacy | - | Dihapus | Tidak perlu gambar default jika foto kosong, dan kontak langsung ditampilkan apa adanya. |
+## 🔗 Repositories
 
-## 3. Desain Database (Tabel Report)
+- Backend: `<link to this repo>`
+- Frontend: `<link to frontend repo>`
 
-| Nama Field | Tipe Data (Prisma/DB) | Sifat | Keterangan |
-| --- | --- | --- | --- |
-| `id` | Int (Primary Key) | Wajib (Auto) | ID unik laporan (auto-increment). |
-| `type` | Enum (`LOST` / `FOUND`) | Wajib | Jenis laporan: barang hilang atau ditemukan. |
-| `itemName` | String | Wajib | Nama barang yang hilang atau ditemukan. |
-| `category` | String | Wajib | Kategori barang (Elektronik, Dokumen/KTM, Alat Minum, dll.). |
-| `location` | String | Wajib | Lokasi terakhir barang terlihat atau ditemukan. |
-| `description` | String | Wajib | Deskripsi ciri barang dan kronologi singkat. |
-| `imageUrl` | String? (Nullable) | Opsional | Link foto dari Cloudinary; bernilai null jika tidak ada foto. |
-| `contact` | String | Wajib | Kontak pelapor yang bisa dihubungi (WA / LINE / Instagram). |
-| `createdAt` | DateTime | Wajib (Auto) | Waktu laporan dibuat. |
+## 🧰 Tech Stack
 
-## 4. Kontrak REST API
+| Component | Technology |
+|-----------|------------|
+| Frontend | HTML, CSS, JavaScript, React.js, Vite |
+| Backend | JavaScript, Node.js, Express.js |
+| Database | PostgreSQL |
+| ORM | Prisma ORM |
+| Image Storage | Cloudinary |
+| Version Control | GitHub |
 
-| Metode HTTP | Endpoint | Kegunaan | Format Request (Body / Query) | Format Response Sukses |
-| --- | --- | --- | --- | --- |
-| `GET` | `/reports` | Ambil semua daftar laporan | Opsional Query: `?search=...&type=...&category=...&location=...` | `200 OK` — `{ "status": "success", "data": [ ... ] }` |
-| `GET` | `/reports/:id` | Ambil detail 1 laporan spesifik | URL Param: `id` (angka ID laporan) | `200 OK` — `{ "status": "success", "data": { ... } }` |
-| `POST` | `/reports` | Kirim laporan baru | `multipart/form-data` (`type`, `itemName`, `category`, `location`, `description`, `contact`, dan `image` [opsional]) | `201 Created` — `{ "status": "success", "data": { ... } }` |
+## ✅ Checkpoint 1 Requirements
 
-## 5. Daftar HTTP Status Codes
+| Requirement | Where |
+|-------------|-------|
+| GitHub repos, local environment, README | This README + frontend README |
+| Pages, features, team responsibilities | [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md) |
+| Report fields, data types, DB relationships | [`docs/DATABASE_DESIGN.md`](docs/DATABASE_DESIGN.md) (sections 1–4) |
+| Report fields -> Prisma schema plan (Week 3) | [`docs/DATABASE_DESIGN.md`](docs/DATABASE_DESIGN.md) (sections 5–8) |
+| REST API contract (endpoints, methods, JSON, status codes) | [`docs/API_CONTRACT.md`](docs/API_CONTRACT.md) |
+| Search/filter query params and pagination | [`docs/API_CONTRACT.md`](docs/API_CONTRACT.md) (section 7) |
+| Report submission format and optional image upload | [`docs/API_CONTRACT.md`](docs/API_CONTRACT.md) (section 9) |
+| Consistent mock data for FE and BE | [`mock-data/`](mock-data/) |
 
-| Status Code | Nama Status | Kondisi Penggunaan |
-| --- | --- | --- |
-| `200` | OK | Permintaan `GET /reports` atau `GET /reports/:id` berhasil diambil. |
-| `201` | Created | Laporan baru lewat `POST /reports` berhasil dibuat dan disimpan. |
-| `400` | Bad Request | Data form yang dikirim tidak lengkap atau format file foto tidak valid. |
-| `404` | Not Found | ID laporan yang dicari pada `GET /reports/:id` tidak ditemukan. |
-| `500` | Internal Server Error | Terjadi gangguan di server Backend, database, atau Cloudinary. |
+## 🚀 Local Setup (Backend)
 
-## 6. MVP (Minimum Viable Product)
-...
+Requirements: **Node.js (LTS)**, **npm**, **Git**. PostgreSQL is only needed for `STORAGE=prisma`.
 
-## 7. Mock Data
-```[
-  {
-    "id": "a1b2c3d4-0000-4000-8000-000000000001",
-    "type": "LOST",
-    "itemName": "Tumbler Tupperware Biru",
-    "description": "Tumbler biru merek Tupperware, ada stiker kecil logo Pacil di bagian bawah. Seingat saya tertinggal di meja pojok setelah kelas.",
-    "category": {
-      "slug": "drinkware",
-      "name": "Tumbler & Botol"
-    },
-    "location": {
-      "slug": "gedung-a",
-      "name": "Gedung A"
-    },
-    "locationDetail": "Ruang A206",
-    "eventDate": "2026-11-14",
-    "imageUrl": null,
-    "reporterName": "Raka",
-    "contact": {
-      "method": "WHATSAPP",
-      "value": "081200000001"
-    },
-    "createdAt": "2026-11-15T08:30:00.000Z",
-    "updatedAt": "2026-11-15T08:30:00.000Z"
-  },
-  {
-    "id": "a1b2c3d4-0000-4000-8000-000000000002",
-    "type": "FOUND",
-    "itemName": "KTM Mahasiswa Fasilkom (nama diawali \"Au\")",
-    "description": "Ditemukan KTM mahasiswa Fasilkom, nama diawali 'Au'. Sudah dititipkan di pos satpam, silakan ambil dengan menunjukkan identitas.",
-    "category": {
-      "slug": "card-document",
-      "name": "Kartu & Dokumen"
-    },
-    "location": {
-      "slug": "pos-satpam",
-      "name": "Pos Satpam"
-    },
-    "locationDetail": null,
-    "eventDate": "2026-11-15",
-    "imageUrl": "https://res.cloudinary.com/demo/image/upload/sample.jpg",
-    "reporterName": "Dimas",
-    "contact": {
-      "method": "INSTAGRAM",
-      "value": "dimas.pacil"
-    },
-    "createdAt": "2026-11-15T07:15:00.000Z",
-    "updatedAt": "2026-11-15T07:15:00.000Z"
-  },
-  {
-    "id": "a1b2c3d4-0000-4000-8000-000000000003",
-    "type": "LOST",
-    "itemName": "Charger Laptop Asus 65W",
-    "description": "Charger laptop Asus 65W dengan kabel agak kusut dan ada selotip hitam di dekat colokan. Terakhir dipakai saat rapat di sekre.",
-    "category": {
-      "slug": "electronics",
-      "name": "Elektronik"
-    },
-    "location": {
-      "slug": "sekretariat",
-      "name": "Sekretariat (Sekre)"
-    },
-    "locationDetail": "Meja dekat pintu masuk",
-    "eventDate": "2026-11-13",
-    "imageUrl": null,
-    "reporterName": "Salsa",
-    "contact": {
-      "method": "LINE",
-      "value": "salsa_cs"
-    },
-    "createdAt": "2026-11-14T13:40:00.000Z",
-    "updatedAt": "2026-11-14T13:40:00.000Z"
-  },
-  {
-    "id": "a1b2c3d4-0000-4000-8000-000000000004",
-    "type": "FOUND",
-    "itemName": "Kunci Motor Honda dengan Gantungan Kuning",
-    "description": "Kunci motor Honda dengan gantungan kuning berbentuk bebek, ditemukan di dekat tiang parkiran motor.",
-    "category": {
-      "slug": "keys",
-      "name": "Kunci"
-    },
-    "location": {
-      "slug": "area-parkir",
-      "name": "Area Parkir"
-    },
-    "locationDetail": null,
-    "eventDate": "2026-11-14",
-    "imageUrl": "https://res.cloudinary.com/demo/image/upload/cld-sample.jpg",
-    "reporterName": "Fajar",
-    "contact": {
-      "method": "WHATSAPP",
-      "value": "081200000002"
-    },
-    "createdAt": "2026-11-14T09:05:00.000Z",
-    "updatedAt": "2026-11-14T09:05:00.000Z"
-  },
-  {
-    "id": "a1b2c3d4-0000-4000-8000-000000000005",
-    "type": "LOST",
-    "itemName": "Earphone TWS Putih",
-    "description": "Earphone TWS warna putih beserta case-nya, hilang setelah belajar kelompok di perpustakaan.",
-    "category": {
-      "slug": "electronics",
-      "name": "Elektronik"
-    },
-    "location": {
-      "slug": "perpustakaan",
-      "name": "Perpustakaan"
-    },
-    "locationDetail": "Lantai 2, area baca",
-    "eventDate": "2026-11-12",
-    "imageUrl": null,
-    "reporterName": "Nadia",
-    "contact": {
-      "method": "EMAIL",
-      "value": "nadia@example.com"
-    },
-    "createdAt": "2026-11-13T15:20:00.000Z",
-    "updatedAt": "2026-11-13T15:20:00.000Z"
-  },
-  {
-    "id": "a1b2c3d4-0000-4000-8000-000000000006",
-    "type": "FOUND",
-    "itemName": "Payung Lipat Hitam",
-    "description": "Payung lipat warna hitam ditemukan di bangku kantin, belum ada yang mengambil.",
-    "category": {
-      "slug": "other",
-      "name": "Lainnya"
-    },
-    "location": {
-      "slug": "kantin",
-      "name": "Kantin"
-    },
-    "locationDetail": null,
-    "eventDate": "2026-11-13",
-    "imageUrl": null,
-    "reporterName": "Bayu",
-    "contact": {
-      "method": "WHATSAPP",
-      "value": "081200000003"
-    },
-    "createdAt": "2026-11-13T05:50:00.000Z",
-    "updatedAt": "2026-11-13T05:50:00.000Z"
-  },
-  {
-    "id": "a1b2c3d4-0000-4000-8000-000000000007",
-    "type": "LOST",
-    "itemName": "Dompet Kulit Cokelat",
-    "description": "Dompet kulit cokelat berisi beberapa kartu dan sedikit uang tunai. Tertinggal setelah salat.",
-    "category": {
-      "slug": "bags-wallets",
-      "name": "Tas & Dompet"
-    },
-    "location": {
-      "slug": "musholla",
-      "name": "Musholla"
-    },
-    "locationDetail": "Rak sepatu",
-    "eventDate": "2026-11-11",
-    "imageUrl": "https://res.cloudinary.com/demo/image/upload/sample.jpg",
-    "reporterName": "Rina",
-    "contact": {
-      "method": "INSTAGRAM",
-      "value": "rina.ananda"
-    },
-    "createdAt": "2026-11-12T11:00:00.000Z",
-    "updatedAt": "2026-11-12T11:00:00.000Z"
-  },
-  {
-    "id": "a1b2c3d4-0000-4000-8000-000000000008",
-    "type": "FOUND",
-    "itemName": "Buku Catatan Kalkulus",
-    "description": "Buku catatan kalkulus sampul biru dengan nama pemilik di halaman pertama. Ditemukan di meja belakang kelas.",
-    "category": {
-      "slug": "stationery",
-      "name": "Buku & Alat Tulis"
-    },
-    "location": {
-      "slug": "gedung-b",
-      "name": "Gedung B"
-    },
-    "locationDetail": "Ruang B105",
-    "eventDate": "2026-11-12",
-    "imageUrl": null,
-    "reporterName": "Kevin",
-    "contact": {
-      "method": "EMAIL",
-      "value": "kevin@example.com"
-    },
-    "createdAt": "2026-11-12T06:30:00.000Z",
-    "updatedAt": "2026-11-12T06:30:00.000Z"
-  },
-  {
-    "id": "a1b2c3d4-0000-4000-8000-000000000009",
-    "type": "LOST",
-    "itemName": "Jaket Hoodie Navy",
-    "description": "Hoodie warna navy ukuran L dengan tulisan kecil di bagian dada. Tertinggal saat menunggu kelas.",
-    "category": {
-      "slug": "clothing",
-      "name": "Pakaian & Aksesori"
-    },
-    "location": {
-      "slug": "gedung-b",
-      "name": "Gedung B"
-    },
-    "locationDetail": "Lobby lantai 1",
-    "eventDate": "2026-11-10",
-    "imageUrl": "https://res.cloudinary.com/demo/image/upload/cld-sample.jpg",
-    "reporterName": "Tari",
-    "contact": {
-      "method": "WHATSAPP",
-      "value": "081200000004"
-    },
-    "createdAt": "2026-11-11T14:10:00.000Z",
-    "updatedAt": "2026-11-11T14:10:00.000Z"
-  },
-  {
-    "id": "a1b2c3d4-0000-4000-8000-000000000010",
-    "type": "FOUND",
-    "itemName": "Tas Ransel Hitam",
-    "description": "Tas ransel hitam berisi buku dan alat tulis. Ditemukan di bawah meja, kami simpan dulu agar aman.",
-    "category": {
-      "slug": "bags-wallets",
-      "name": "Tas & Dompet"
-    },
-    "location": {
-      "slug": "gedung-a",
-      "name": "Gedung A"
-    },
-    "locationDetail": "Ruang A101",
-    "eventDate": "2026-11-10",
-    "imageUrl": null,
-    "reporterName": "Hanif",
-    "contact": {
-      "method": "LINE",
-      "value": "hanif_88"
-    },
-    "createdAt": "2026-11-10T10:25:00.000Z",
-    "updatedAt": "2026-11-10T10:25:00.000Z"
-  },
-  {
-    "id": "a1b2c3d4-0000-4000-8000-000000000011",
-    "type": "LOST",
-    "itemName": "Kalkulator Casio fx-991EX",
-    "description": "Kalkulator Casio fx-991EX dengan stiker nama di bagian belakang. Dibutuhkan untuk ujian minggu ini.",
-    "category": {
-      "slug": "stationery",
-      "name": "Buku & Alat Tulis"
-    },
-    "location": {
-      "slug": "gedung-a",
-      "name": "Gedung A"
-    },
-    "locationDetail": "Ruang A304",
-    "eventDate": "2026-11-09",
-    "imageUrl": null,
-    "reporterName": "Putri",
-    "contact": {
-      "method": "WHATSAPP",
-      "value": "081200000005"
-    },
-    "createdAt": "2026-11-09T08:00:00.000Z",
-    "updatedAt": "2026-11-09T08:00:00.000Z"
-  },
-  {
-    "id": "a1b2c3d4-0000-4000-8000-000000000012",
-    "type": "FOUND",
-    "itemName": "Flashdisk Sandisk 64GB",
-    "description": "Flashdisk Sandisk 64GB warna hitam-merah ditemukan tertancap di komputer perpustakaan.",
-    "category": {
-      "slug": "electronics",
-      "name": "Elektronik"
-    },
-    "location": {
-      "slug": "perpustakaan",
-      "name": "Perpustakaan"
-    },
-    "locationDetail": null,
-    "eventDate": "2026-11-08",
-    "imageUrl": null,
-    "reporterName": "Gilang",
-    "contact": {
-      "method": "INSTAGRAM",
-      "value": "gilang.dev"
-    },
-    "createdAt": "2026-11-08T16:45:00.000Z",
-    "updatedAt": "2026-11-08T16:45:00.000Z"
-  }
-]```
+```bash
+git clone <this-repo-url>
+cd lostfound-backend
+npm install
+cp .env.example .env      # Windows PowerShell: Copy-Item .env.example .env
+npm run dev
+```
+Open <http://localhost:3000/health>. By default (`STORAGE=memory`) the API runs with the 12 mock reports, no database required.
+
+### Running with PostgreSQL + Cloudinary (Checkpoint 3)
+Full steps: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). Short version:
+```bash
+npm install prisma@6 @prisma/client@6 multer cloudinary
+# set STORAGE=prisma, DATABASE_URL and CLOUDINARY_* in .env
+npx prisma migrate dev --name init
+npm run seed
+npm run dev
+```
+Prisma is pinned to major version 6; the code is written for it.
+
+### Scripts
+| Command | What it does |
+|---------|--------------|
+| `npm run dev` | Start with `nodemon` (auto-restart) |
+| `npm start` | Start with `node` (production) |
+| `npm test` | Run automated tests |
+| `npm run migrate:dev` | Create/apply migrations locally |
+| `npm run migrate:deploy` | Apply migrations to production |
+| `npm run seed` / `seed:demo` | Seed categories+locations / also demo reports |
+
+### Environment variables
+See [`.env.example`](.env.example): `PORT`, `CORS_ORIGIN`, `APP_TIMEZONE`, `STORAGE`, `DATABASE_URL`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`.
+
+## 📁 Project Structure
+
+```
+lostfound-backend/
+├── docs/                 # PROJECT_PLAN, DATABASE_DESIGN, API_CONTRACT, CODE_WALKTHROUGH, TESTING, DEPLOYMENT
+├── mock-data/            # Shared mock data (same shape as API responses)
+├── prisma/               # schema.prisma, seed.js, migrations/ (generated by migrate dev)
+├── test/                 # Automated tests (node:test)
+└── src/
+    ├── app.js            # Express app (CORS, JSON, routes, error handling)
+    ├── server.js         # Entry point
+    ├── config.js         # Environment variables
+    ├── constants.js      # Enums and limits
+    ├── routes/           # URL -> controller
+    ├── controllers/      # Request -> service -> response
+    ├── services/         # Business rules, Cloudinary
+    ├── repositories/     # Data access: memory or Prisma
+    ├── middlewares/      # Upload, error handling
+    ├── validators/       # Input validation
+    └── utils/            # Helpers (privacy mapper, AppError, ...)
+```
+
+## 🌿 Git Workflow
+
+Branches `feat/...`, `fix/...`, `docs/...` -> Pull Request -> review by a teammate -> merge to `main`.
+Commit messages: `feat: ...`, `fix: ...`, `docs: ...`, `chore: ...`. Never commit `.env`.
+
+## 📌 API Overview
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/health` | Health check |
+| GET | `/categories`, `/locations` | Reference lists |
+| GET | `/reports` | List/search/filter/paginate reports |
+| GET | `/reports/:id` | Report detail |
+| POST | `/reports` | Submit a report (optional `image`) |
+
+Full details: [`docs/API_CONTRACT.md`](docs/API_CONTRACT.md).
+
+## 🗓️ Checkpoints
+
+- [x] **CP1 (16 Nov 2026)** Project Preparation
+- [x] **CP2 (19 Nov 2026)** Main UI & Working API (code ready; deploy + publish base URL)
+- [ ] **CP3 (22 Nov 2026)** Full Integration & Deployment (code ready; run migrations, deploy, verify)
