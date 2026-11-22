@@ -1,27 +1,51 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const inputClass =
-  "w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100";
+// 
+const CATEGORIES = [
+  { id: 1, slug: "card-document", name: "ID Card / Documents" },
+  { id: 2, slug: "electronics", name: "Electronics" },
+  { id: 3, slug: "bags-wallets", name: "Bags / Wallets" },
+  { id: 4, slug: "drinkware", name: "Drinkware" },
+  { id: 5, slug: "keys", name: "Keys" },
+  { id: 6, slug: "clothing", name: "Clothing" },
+  { id: 7, slug: "stationery", name: "Stationery" },
+  { id: 8, slug: "other", name: "Other" },
+];
+
+const LOCATIONS = [
+  { id: 1, slug: "gedung-a", name: "Gedung A" },
+  { id: 2, slug: "gedung-b", name: "Gedung B" },
+  { id: 3, slug: "perpustakaan", name: "Perpustakaan" },
+  { id: 4, slug: "kantin", name: "Kantin" },
+  { id: 5, slug: "sekretariat", name: "Sekretariat" },
+  { id: 6, slug: "pos-satpam", name: "Pos Satpam" },
+  { id: 7, slug: "musholla", name: "Musholla" },
+  { id: 8, slug: "area-parkir", name: "Area Parkir" },
+  { id: 9, slug: "lainnya", name: "Lainnya" },
+];
 
 export default function CreateReportPage() {
   const navigate = useNavigate();
-
+  
   // State untuk menyimpan semua isi formulir
-  const [reportType, setReportType] = useState("FOUND"); // "LOST" atau "FOUND"
+  const [reportType, setReportType] = useState("FOUND"); 
   const [itemName, setItemName] = useState("");
-  const [category, setCategory] = useState("");
-  const [location, setLocation] = useState("");
+  const [categoryID, setCategoryID] = useState("");
+  const [locationID, setLocationID] = useState("");
+  const [LocationDetail, setLocationDetail] = useState("");
+  const [eventDate, setEventDate] = useState("");
   const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState("");
   const [reporterName, setReporterName] = useState("");
-  const [contact, setContact] = useState("");
-
+  const [publicContactMethod, setPublicContactMethod] = useState("WHATSAPP");
+  const [contactValue, setContactValue] = useState("");
+  
   const isFound = reportType === "FOUND";
+  const todayStr = new Date().toLocaleDateString("en-CA");
 
-  // Menangani pemilihan file foto + validasi max 5MB
-
+  // Pemilihan file foto (ukuran file max 5MB, remove, dan drag-and-drop foto)
   const handleFileChange = (file) => {
     if (!file) return;
     if (!["image/png", "image/jpeg"].includes(file.type)) {
@@ -35,38 +59,43 @@ export default function CreateReportPage() {
     setPhoto(file);
     setPhotoPreview(URL.createObjectURL(file));
   };
-
+  
   const handleRemovePhoto = (e) => {
     e.preventDefault();
     setPhoto(null);
     setPhotoPreview("");
   };
-
-  // Menangani saat user drag-and-drop foto ke kotak upload
+  
   const handleDrop = (e) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files?.[0];
     handleFileChange(droppedFile);
   };
-
+  
   // Menangani tombol Submit Report (tanggal otomatis terisi hari ini)
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const now = new Date();
-    const autoDate = now.toLocaleDateString("en-CA");
+    
+    const cleanedContact = 
+      publicContactMethod === "INSTAGRAM"
+        ? contactValue.trim().replace(/^@+/, "")
+        : contactValue.trim();
 
     const payload = {
       type: reportType,
-      itemName,
-      category,
-      date: autoDate,
-      submittedAt: now.toISOString(),
-      location,
-      description,
-      photoName: photo ? photo.name : null,
-      reporterName,
-      contact,
+      itemName: itemName.trim(),
+      categoryID: Number(categoryID),
+      locationID: Number(locationID),
+      LocationDetail: LocationDetail.trim() || null,
+      eventDate,
+      description: description.trim(),
+      imageURL: null,
+      reporterName: reporterName.trim(),
+      publicContactMethod,
+      contactWhatsapp: publicContactMethod === "WHATSAPP" ? cleanedContact : null,
+      contactInstagram: publicContactMethod === "INSTAGRAM" ? cleanedContact : null,
+      contactLine: publicContactMethod === "LINE" ? cleanedContact : null,
+      contactEmail: publicContactMethod === "EMAIL" ? cleanedContact : null,
     };
 
     console.log("Report data ready to be sent to BackEnd:", payload);
@@ -74,6 +103,12 @@ export default function CreateReportPage() {
     navigate("/reports");
   };
 
+  // CSS konstan
+  const box =
+    "w-full px-3.5 py-2.5 text-sm bg-white border-2 border-black rounded-xl focus:outline-none focus:bg-gray-100";
+  const name =
+    "block text-[11px] font-extrabold uppercase tracking-wider mb-1.5"
+  
   return (
     <div className="min-h-screen bg-transparent text-black py-10 px-4 sm:px-6">
       <div className="max-w-2xl mx-auto">
@@ -87,7 +122,7 @@ export default function CreateReportPage() {
             numbers, out of the description.
           </p>
 
-          {/* Pill Toggle: I LOST SOMETHING / I FOUND SOMETHING */}
+          {/* Pilihan Lost or Found */}
           <div className="mt-5 inline-flex items-center bg-white border-2 border-black rounded-full shadow-[3px_3px_0px_#000] p-1 gap-1">
             <button
               type="button"
@@ -112,88 +147,126 @@ export default function CreateReportPage() {
           </div>
         </div>
 
-        {/* Kartu Formulir Utama */}
+        {/* Bingkai formulir utama */}
         <form
           onSubmit={handleSubmit}
           className="bg-white border-2 border-black rounded-2xl shadow-[5px_5px_0px_#000] p-6 sm:p-8 space-y-5"
         >
           {/* ITEM NAME */}
           <div>
-            <label className="block text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+            <label className={name}>
               Item Name
             </label>
             <input
               type="text"
               required
+              minLength={3}
+              maxLength={100}
               value={itemName}
               onChange={(e) => setItemName(e.target.value)}
               placeholder="e.g. Black leather wallet"
-              className={inputClass}
+              className={box}
             />
           </div>
 
-          {/* CATEGORY */}
+          {/* CATEGORY & DATE */}
           <div>
-            <label className="block text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+            <label className={name}>
               Category
             </label>
             <select
               required
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className={inputClass}
+              value={categoryID}
+              onChange={(e) => setCategoryID(e.target.value)}
+              className={box}
             >
               <option value="" disabled>
                 Select a category
               </option>
-              <option value="Electronics">Electronics / Phone</option>
-              <option value="Food/Drink">Food / Drink</option>
-              <option value="Documents">ID Card / Documents</option>
-              <option value="Keys">Keys</option>
-              <option value="Wallet">Wallet</option>
-              <option value="Other">Other</option>
+              {CATEGORIES.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
             </select>
           </div>
-
-          {/* WHERE WAS IT FOUND / LOST? */}
           <div>
-            <label className="block text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
-              {isFound ? "Where was it found?" : "Where was it lost?"}
+            <label className="block-text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+              {isFound ? "Date Found" : "Date Lost"}
             </label>
             <input
-              type="text"
+              type="date"
               required
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Room number, floor"
-              className={inputClass}
+              max={todayStr}
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
+              className={box}
             />
+          </div>
+
+          {/* LOCATION */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className={name}>
+                {isFound ? "Where was it found?" : "Where was it lost?"}
+              </label>
+              <select
+                required
+                value={locationID}
+                onChange={(e) => setLocationID(e.target.value)}
+                className={box}
+                >
+                  <option value="" disabled>
+                    Select a Location
+                  </option>
+                  {LOCATIONS.map((loc) => (
+                  <option key={loc.id} value={loc.id}>
+                    {loc.name}
+                  </option>
+                ))}
+                </select>
+              </div>
+              <div>
+                <label className={name}>
+                  Location Details (Optional)
+                </label>
+                <input
+                  type="text"
+                  maxLength={100}
+                  value={LocationDetail}
+                  onChange={(e) => setLocationDetail(e.target.value)}
+                  placeholder="e.g. Ruang A2.06"
+                  className={box}
+                />
+              </div>
           </div>
 
           {/* DESCRIPTION */}
           <div>
-            <label className="block text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+            <label className={name}>
               Description
             </label>
             <textarea
               rows={4}
               required
+              minLength={10}
+              maxLength={1000}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Colour, brand, marks, what makes it identifiable..."
-              className={`${inputClass} resize-none`}
+              className={`${box} resize-none`}
             />
           </div>
 
           {/* PHOTOS (Drag & Drop atau Browse) */}
           <div>
-            <label className="block text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+            <label className={name}>
               Photos
             </label>
             <label
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleDrop}
-              className="w-full min-h-[120px] bg-gray-50 hover:bg-gray-100 border-2 border-dashed border-black rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
+              className="w-full min-h-30 bg-gray-50 hover:bg-gray-100 border-2 border-dashed border-black rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
             >
               <input
                 type="file"
@@ -237,10 +310,10 @@ export default function CreateReportPage() {
             )}
           </div>
 
-          {/* YOUR NAME & EMAIL OR PHONE (2 Kolom) */}
+          {/* YOUR NAME & PREFERRED CONTACT METHOD */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+              <label className={name}>
                 Your Name
               </label>
               <input
@@ -249,21 +322,54 @@ export default function CreateReportPage() {
                 value={reporterName}
                 onChange={(e) => setReporterName(e.target.value)}
                 placeholder="Full name"
-                className={inputClass}
+                className={box}
               />
             </div>
 
+            <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="block text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
-                WA / LINE / INSTAGRAM
+                Preferred Contact Method
+              </label>
+              <select
+                required
+                value={publicContactMethod}
+                onChange={(e) => {
+                  setPublicContactMethod(e.target.value);
+                  setContactValue("");
+                }}
+                className={box}
+              >
+                <option value="WHATSAPP">WhatsApp</option>
+                <option value="INSTAGRAM">Instagram</option>
+                <option value="LINE">LINE</option>
+                <option value="EMAIL">Email</option>
+              </select>
+            </div>
+          </div>
+
+            <div>
+              <label className="block text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+                {publicContactMethod === "WHATSAPP" && "WhatsApp Number"}
+                {publicContactMethod === "INSTAGRAM" && "Instagram Username"}
+                {publicContactMethod === "LINE" && "LINE ID"}
+                {publicContactMethod === "EMAIL" && "Email Address"}
               </label>
               <input
-                type="text"
+                type={publicContactMethod === "EMAIL" ? "email" : "text"}
                 required
-                value={contact}
-                onChange={(e) => setContact(e.target.value)}
-                placeholder="Your Contact"
-                className={inputClass}
+                value={contactValue}
+                onChange={(e) => setContactValue(e.target.value)}
+                placeholder={
+                  publicContactMethod === "WHATSAPP"
+                    ? "e.g. 08123456789"
+                    : publicContactMethod === "INSTAGRAM"
+                    ? "username (without @)"
+                    : publicContactMethod === "LINE"
+                    ? "e.g. line_id"
+                    : "e.g. name@example.com"
+                }
+                className={box}
               />
             </div>
           </div>
@@ -272,7 +378,7 @@ export default function CreateReportPage() {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               type="submit"
-              className="px-6 py-3 bg-black text-white hover:bg-neutral-800 active:translate-x-[2px] active:translate-y-[2px] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
+              className="px-6 py-3 bg-black text-white hover:bg-neutral-800 active:translate-x-0.5 active:translate-y-0.5 border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
             >
               Submit Report
             </button>
@@ -280,7 +386,7 @@ export default function CreateReportPage() {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="px-6 py-3 bg-white text-black hover:bg-gray-100 active:translate-x-[2px] active:translate-y-[2px] border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
+              className="px-6 py-3 bg-white text-black hover:bg-gray-100 active:translate-x-0.5 active:translate-y-0.5 border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
             >
               Cancel
             </button>
