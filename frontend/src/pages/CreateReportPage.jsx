@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createReport } from "../services/reportService";
+import { getReferenceData } from "../services/referenceData";
 
-// 
 const CATEGORIES = [
   { id: 1, slug: "card-document", name: "ID Card / Documents" },
   { id: 2, slug: "electronics", name: "Electronics" },
@@ -30,10 +31,14 @@ export default function CreateReportPage() {
   
   // State untuk menyimpan semua isi formulir
   const [reportType, setReportType] = useState("FOUND"); 
+
+  const [categories, setCategories] = useState(CATEGORIES);
+  const [locations, setLocations] = useState(LOCATIONS);
+
   const [itemName, setItemName] = useState("");
-  const [categoryID, setCategoryID] = useState("");
-  const [locationID, setLocationID] = useState("");
-  const [LocationDetail, setLocationDetail] = useState("");
+  const [category, setcategory] = useState("");
+  const [location, setlocation] = useState("");
+  const [locationDetail, setLocationDetail] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState(null);
@@ -41,15 +46,23 @@ export default function CreateReportPage() {
   const [reporterName, setReporterName] = useState("");
   const [publicContactMethod, setPublicContactMethod] = useState("WHATSAPP");
   const [contactValue, setContactValue] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const isFound = reportType === "FOUND";
   const todayStr = new Date().toLocaleDateString("en-CA");
 
+  useEffect(() => {
+    getReferenceData().then((ref) => {
+      if (ref?.categories?.length) setCategories(ref.categories);
+      if (ref?.locations?.length) setLocations(ref.locations);
+    });
+  }, []);
+
   // Pemilihan file foto (ukuran file max 5MB, remove, dan drag-and-drop foto)
   const handleFileChange = (file) => {
     if (!file) return;
-    if (!["image/png", "image/jpeg"].includes(file.type)) {
-      alert("File must PNG or JPG")
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+      alert("File must PNG, JPG, or WEBP")
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
@@ -73,8 +86,9 @@ export default function CreateReportPage() {
   };
   
   // Menangani tombol Submit Report (tanggal otomatis terisi hari ini)
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     
     const cleanedContact = 
       publicContactMethod === "INSTAGRAM"
@@ -84,12 +98,12 @@ export default function CreateReportPage() {
     const payload = {
       type: reportType,
       itemName: itemName.trim(),
-      categoryID: Number(categoryID),
-      locationID: Number(locationID),
-      LocationDetail: LocationDetail.trim() || null,
+      category,
+      location,
+      locationDetail: locationDetail.trim() || null,
       eventDate,
       description: description.trim(),
-      imageURL: null,
+      image: photo || null,
       reporterName: reporterName.trim(),
       publicContactMethod,
       contactWhatsapp: publicContactMethod === "WHATSAPP" ? cleanedContact : null,
@@ -98,9 +112,15 @@ export default function CreateReportPage() {
       contactEmail: publicContactMethod === "EMAIL" ? cleanedContact : null,
     };
 
-    console.log("Report data ready to be sent to BackEnd:", payload);
-    alert(`Report "${itemName}" submitted successfully`);
-    navigate("/reports");
+    try {
+      setIsSubmitting(true);
+      await createReport(payload);
+      navigate("/reports");
+    } catch (err) {
+      alert(err?.message || "Failed to submit report.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // CSS konstan
@@ -176,15 +196,15 @@ export default function CreateReportPage() {
             </label>
             <select
               required
-              value={categoryID}
-              onChange={(e) => setCategoryID(e.target.value)}
+              value={category}
+              onChange={(e) => setcategory(e.target.value)}
               className={box}
             >
               <option value="" disabled>
                 Select a category
               </option>
-              {CATEGORIES.map((cat) => (
-                <option key={cat.id} value={cat.id}>
+              {categories.map((cat) => (
+                <option key={cat.slug} value={cat.slug}>
                   {cat.name}
                 </option>
               ))}
@@ -212,15 +232,15 @@ export default function CreateReportPage() {
               </label>
               <select
                 required
-                value={locationID}
-                onChange={(e) => setLocationID(e.target.value)}
+                value={location}
+                onChange={(e) => setlocation(e.target.value)}
                 className={box}
                 >
                   <option value="" disabled>
                     Select a Location
                   </option>
-                  {LOCATIONS.map((loc) => (
-                  <option key={loc.id} value={loc.id}>
+                  {locations.map((loc) => (
+                  <option key={loc.slug} value={loc.slug}>
                     {loc.name}
                   </option>
                 ))}
@@ -233,7 +253,7 @@ export default function CreateReportPage() {
                 <input
                   type="text"
                   maxLength={100}
-                  value={LocationDetail}
+                  value={locationDetail}
                   onChange={(e) => setLocationDetail(e.target.value)}
                   placeholder="e.g. Ruang A2.06"
                   className={box}
@@ -270,7 +290,7 @@ export default function CreateReportPage() {
             >
               <input
                 type="file"
-                accept="image/png, image/jpeg"
+                accept="image/png, image/jpeg, image/webp"
                 onChange={(e) => handleFileChange(e.target.files?.[0])}
                 className="hidden"
               />
@@ -292,7 +312,7 @@ export default function CreateReportPage() {
                     Drag photos here
                   </span>
                   <span className="text-[11px] text-gray-600 mt-1">
-                    PNG or JPG, up to 5 MB each
+                    PNG, JPG, or WEBP, up to 5 MB each
                   </span>
                 </>
               )}
@@ -378,6 +398,7 @@ export default function CreateReportPage() {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               type="submit"
+              disabled={isSubmitting}
               className="px-6 py-3 bg-black text-white hover:bg-neutral-800 active:translate-x-0.5 active:translate-y-0.5 border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
             >
               Submit Report

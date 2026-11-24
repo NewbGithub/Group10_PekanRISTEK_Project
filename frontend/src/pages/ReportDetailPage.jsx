@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import reportsData from "../../../mock-data/reports.json";
+import { getReportById } from "../services/reportService";
 
 function formatEventDate(dateStr) {
   if (!dateStr) return "-";
@@ -36,17 +36,67 @@ function getContactDisplay(contact) {
 
 export default function ReportDetailPage() {
   const { id } = useParams();
+
+  const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [notFound, setNotFound] = useState(false);
+
   const [copiedLink, setCopiedLink] = useState(false);
   const [showClaimInfo, setShowClaimInfo] = useState(false);
   const [copiedContact, setCopiedContact] = useState(false);
   const [popOutPhoto, setPopOutPhoto] = useState(false);
 
-  const report = reportsData.find((item) => String(item.id) === String(id));
+  useEffect (() => {
+    let isMounted = true;
+      
+    const fetchReport = async () => {
+      setLoading(true);
+      setError("");
+      setNotFound(false);
 
-  if (!report) {
+      try {
+        const data = await getReportById(id);
+        if (!isMounted) return;
+        
+        if (!data) {
+          setNotFound(true);
+          setReport(null);
+        } else {
+          setReport(data);
+        }
+      } catch (err) {
+        if (!isMounted) return;
+        setError(err?.message || "Failed to load report")
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchReport();
+    return () => {
+      isMounted = false;
+    }
+  }, [id]);
+
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="font-bold">Report not found.</p>
+        <div className="bg-white border-2 border-black rounded-xl p-6 text-center space-y-2">
+          <p className="font-bold text-red-600">Something went wrong</p>
+          <p className="text-xs text-gray-700">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (notFound || !report) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="bg-white border-2 border-black rounded-xl p-6 text-center space-y-1">
+          <p className="text-xl font-extrabold">404</p>
+          <p className="font-bold">Report not found.</p>
+        </div>
       </div>
     );
   }
