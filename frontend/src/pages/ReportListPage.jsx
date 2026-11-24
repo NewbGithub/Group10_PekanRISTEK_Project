@@ -5,6 +5,9 @@ import ReportCard from '../components/ReportCard';
 import SearchBar from '../components/SearchBar';
 import FilterPanel from '../components/FilterPanel';
 import Pagination from '../components/Pagination';
+import Button from '../components/Button';
+import Chip from '../components/Chip';
+import useReferenceData from '../hooks/useReferenceData';
 
 export default function ReportListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -13,6 +16,7 @@ export default function ReportListPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const { categories: categoryOptions } = useReferenceData();
 
   const parsedPage = Number.parseInt(searchParams.get('page') || '1', 10);
   const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
@@ -35,7 +39,16 @@ export default function ReportListPage() {
       setError(null);
       try {
         const categories = categoriesParam ? categoriesParam.split(',') : [];
-        const result = await getReports({ search, type, category, categories, dateRange, location, page, limit });
+        const result = await getReports({
+          search,
+          type,
+          category,
+          categories,
+          dateRange,
+          location,
+          page,
+          limit,
+        });
         if (!cancelled) {
           setReports(result.reports);
           setTotal(result.total);
@@ -48,7 +61,9 @@ export default function ReportListPage() {
         }
       }
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [search, type, category, categoriesParam, dateRange, location, page, limit]);
 
   const resetFilters = () => {
@@ -71,87 +86,114 @@ export default function ReportListPage() {
     setSearchParams(params, { replace: true });
   }, [loading, page, totalPages, searchParams, setSearchParams]);
 
+  const toggleMobileCategory = (slug) => {
+    const params = new URLSearchParams(searchParams);
+    const current = params.get('categories')?.split(',').filter(Boolean) || [];
+    const next = current.includes(slug)
+      ? current.filter((item) => item !== slug)
+      : [...current, slug];
+    if (next.length > 0) params.set('categories', next.join(','));
+    else params.delete('categories');
+    params.delete('page');
+    setSearchParams(params, { replace: true });
+  };
+
   const startIndex = total === 0 ? 0 : (currentPage - 1) * limit + 1;
   const endIndex = Math.min(currentPage * limit, total);
 
   return (
-    <div className="w-full">
-      <nav className="font-ui text-xs tracking-wider text-gray-500 mb-1">
-        Home / Browse All
-      </nav>
-      <h1 className="font-headline text-2xl text-gray-800 mb-1">Browse all reports</h1>
-      <p className="font-body text-sm text-gray-500 mb-4">
-        {loading ? 'Loading reports...' : `${total} active reports`}
-      </p>
+    <div className="px-4 pb-14 pt-8 md:px-16 md:pt-12">
+      <div className="stamp" style={{ '--i': 1 }}>
+        <p className="ui text-xs text-mute md:text-sm">Home / Browse all</p>
+        <h1 className="mt-2 text-[32px] leading-10 md:text-[44px] md:leading-[52px]">
+          Browse all reports
+        </h1>
+        <p className="mt-2 text-sm leading-5 text-mute md:text-lg md:leading-7">
+          {loading
+            ? 'Loading reports...'
+            : `${total} active reports across Fasilkom UI and Universitas Indonesia.`}
+        </p>
+      </div>
 
       <SearchBar />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[18rem_minmax(0,1fr)] gap-6 items-start">
-        <aside className="hidden lg:block">
-          <FilterPanel key={filterKey} />
-        </aside>
-
-        <div className="min-w-0">
-          {/* Collapsible filter panel (hidden once the sidebar is visible) */}
-          <div className="mb-4">
-            <button
-              onClick={() => setMobileFiltersOpen((o) => !o)}
-              className="font-ui text-xs border border-gray-300 px-3 py-1 rounded text-gray-700 bg-white hover:bg-gray-50 w-full lg:hidden"
+      {/* Mobile controls */}
+      <div className="mt-4 grid gap-4 lg:hidden">
+        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2">
+          {categoryOptions.map(({ slug, name }) => (
+            <Chip
+              key={slug}
+              active={categoriesParam.split(',').includes(slug)}
+              onClick={() => toggleMobileCategory(slug)}
             >
-              {mobileFiltersOpen ? 'Hide filters' : 'Filters'}
-            </button>
+              {name}
+            </Chip>
+          ))}
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => setMobileFiltersOpen((open) => !open)}
+        >
+          {mobileFiltersOpen ? 'Hide filters' : 'Filters'}
+        </Button>
+        {mobileFiltersOpen && (
+          <div className="snap-y">
+            <FilterPanel key={filterKey} onApply={() => setMobileFiltersOpen(false)} />
           </div>
-          {mobileFiltersOpen && (
-            <div className="mb-4 lg:hidden">
-              <FilterPanel key={filterKey} onApply={() => setMobileFiltersOpen(false)} />
+        )}
+      </div>
+
+      <div className="mt-6 lg:mt-8 lg:grid lg:grid-cols-[264px_1fr] lg:gap-8">
+        <div className="stamp hidden lg:block" style={{ '--i': 3 }}>
+          <FilterPanel key={filterKey} />
+        </div>
+
+        <section aria-label="Results">
+          <p className="ui mb-4 text-xs text-mute md:text-[15px]">
+            {loading
+              ? 'Loading reports...'
+              : `Showing ${startIndex}–${endIndex} of ${total} reports`}
+          </p>
+
+          {loading ? (
+            <div className="panel p-6">
+              <p className="text-sm leading-6 text-mute">Loading reports...</p>
+            </div>
+          ) : error ? (
+            <div className="panel p-6">
+              <h2 className="text-2xl">Could not load reports</h2>
+              <p className="mt-2 text-mute">{error}</p>
+              <Button className="mt-6" onClick={handleRetry}>
+                Retry
+              </Button>
+            </div>
+          ) : total === 0 ? (
+            <div className="panel p-6">
+              <h2 className="text-2xl">No reports match</h2>
+              <p className="mt-2 text-mute">
+                Clear a filter or search for a different place or item.
+              </p>
+              <Button variant="outline" className="mt-6" onClick={resetFilters}>
+                Reset filters
+              </Button>
+            </div>
+          ) : (
+            <div className="grid gap-6 pr-2 xl:grid-cols-2">
+              {reports.map((report, i) => (
+                <ReportCard
+                  key={report.id}
+                  report={report}
+                  className="stamp"
+                  style={{ '--i': 4 + i }}
+                />
+              ))}
             </div>
           )}
-          <div className="flex items-center justify-between mb-3">
-            <span className="font-ui text-xs tracking-wider text-gray-500">
-              {loading
-                ? 'Loading reports...'
-                : `Showing ${startIndex}–${endIndex} of ${total} reports`}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {loading ? (
-              <div className="col-span-full text-center py-12">
-                <p className="font-body text-sm text-gray-500">Loading reports...</p>
-              </div>
-            ) : error ? (
-              <div className="col-span-full text-center py-12">
-                <p className="font-body text-red-600 text-sm mb-4">{error}</p>
-                <button
-                  onClick={handleRetry}
-                  className="font-ui text-sm border border-gray-300 px-4 py-2 rounded font-semibold tracking-wider text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  Retry
-                </button>
-              </div>
-            ) : total === 0 ? (
-              <div className="col-span-full text-center py-12">
-                <p className="font-body text-sm text-gray-500 mb-4">
-                  No matching reports.
-                </p>
-                <button
-                  onClick={resetFilters}
-                  className="font-ui text-sm border border-gray-300 px-4 py-2 rounded font-semibold tracking-wider text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  Reset filters
-                </button>
-              </div>
-            ) : (
-              reports.map((report) => (
-                <ReportCard key={report.id} report={report} layout="side" />
-              ))
-            )}
-          </div>
 
           {!loading && !error && total > 0 && (
             <Pagination page={currentPage} totalPages={totalPages} />
           )}
-        </div>
+        </section>
       </div>
     </div>
   );

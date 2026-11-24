@@ -1,14 +1,24 @@
 import { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { getReports } from '../services/reportService';
 import ReportCard from '../components/ReportCard';
+import Button from '../components/Button';
+import Chip from '../components/Chip';
 import useReferenceData from '../hooks/useReferenceData';
+
+const steps = [
+  ['1', 'Report', 'Post what you lost or found with a photo, location and date.'],
+  ['2', 'Match', 'We surface likely matches so owners and finders can connect.'],
+  ['3', 'Reunite', 'Confirm details, arrange a safe handover, and mark it returned.'],
+];
 
 export default function HomePage() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [query, setQuery] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
   const { categories: categoryOptions } = useReferenceData();
 
   useEffect(() => {
@@ -37,14 +47,23 @@ export default function HomePage() {
 
   // Hash scrolling
   useEffect(() => {
-    if (location.hash === '#how-it-works') {
-      const el = document.getElementById('how-it-works');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (location.hash !== '#how-it-works') return undefined;
+    const scrollToSection = () =>
+      document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
+    scrollToSection();
+    // Layout can still grow while the report photos load; re-target once settled.
+    const timer = window.setTimeout(scrollToSection, 350);
+    return () => window.clearTimeout(timer);
   }, [location.hash]);
 
   const handleRetry = () => {
     window.location.reload();
+  };
+
+  const submitSearch = (e) => {
+    e.preventDefault();
+    const q = query.trim();
+    navigate(q ? `/reports?search=${encodeURIComponent(q)}` : '/reports');
   };
 
   const sortedReports = [...reports].sort(
@@ -52,134 +71,148 @@ export default function HomePage() {
   );
 
   return (
-    <div className="flex flex-col min-h-0">
-      <section className="bg-gray-100 border-b border-gray-300 py-14 px-4">
-        <div className="max-w-3xl mx-auto text-left md:text-center">
-          <h1 className="font-headline text-3xl text-gray-900 mb-3">
-            Lost something? Let's find it.
-          </h1>
-          <p className="font-body text-gray-600 mt-3 text-sm mb-6">
-            Search reported items or post your own. Our community helps lost belongings find their way home.
-          </p>
-          <Link
-            to="/reports"
-            className="font-ui w-full md:w-auto px-5 py-3 bg-pink-500 text-white rounded-lg font-semibold tracking-wider text-center text-sm hover:bg-pink-600 block"
+    <>
+      {/* Hero */}
+      <section className="border-b-[3px] border-ink bg-yellow px-4 py-10 md:px-16 md:py-24">
+        <div className="mx-auto max-w-[900px] md:text-center">
+          <h1
+            className="stamp text-[40px] leading-[48px] md:text-[64px] md:leading-[72px]"
+            style={{ '--i': 1 }}
           >
-            Browse All Reports
-          </Link>
-          <div className="mt-4 flex flex-col gap-3 md:flex-row md:justify-center">
-            <Link
-              to="/create?type=LOST"
-              className="font-ui w-full md:w-auto px-5 py-3 bg-pink-500 text-white rounded-lg font-semibold tracking-wider text-center text-sm hover:bg-pink-600"
-            >
-              I Lost Something
-            </Link>
-            <Link
-              to="/create?type=FOUND"
-              className="font-ui w-full md:w-auto px-5 py-3 bg-white text-gray-800 border border-gray-300 rounded-lg font-semibold tracking-wider text-center text-sm hover:bg-gray-50"
-            >
-              I Found Something
-            </Link>
+            Lost something?
+            <br />
+            Let’s find it.
+          </h1>
+          <p
+            className="stamp mt-6 text-base leading-6 text-[#2B2B2B] md:mx-auto md:max-w-[640px] md:text-xl md:leading-7"
+            style={{ '--i': 2 }}
+          >
+            Search reported items or post your own. Our community helps lost
+            belongings find their way home.
+          </p>
+          <form
+            onSubmit={submitSearch}
+            className="stamp mt-6 hidden gap-4 md:mx-auto md:grid md:max-w-[760px] md:grid-cols-[1fr_auto_auto] md:items-center md:rounded-[10px] md:border-[3px] md:border-ink md:bg-white md:p-2 md:pl-7 md:shadow-hard"
+            style={{ '--i': 3 }}
+          >
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              aria-label="Search lost and found items"
+              placeholder="What did you lose or find?"
+              maxLength={100}
+              className="h-14 w-full rounded-[10px] border-[3px] border-ink bg-white px-4 shadow-hard placeholder:text-mute md:h-12 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:shadow-none"
+            />
+            <span className="ui hidden text-[15px] md:block">All locations</span>
+            <Button type="submit" className="w-full md:w-auto">
+              Search
+            </Button>
+          </form>
+          <div
+            className="stamp mt-6 grid gap-4 md:flex md:justify-center"
+            style={{ '--i': 4 }}
+          >
+            <Button to="/reports" variant="outline">
+              Browse All Reports
+            </Button>
+            <Button to="/create?type=LOST">I lost something</Button>
+            <Button to="/create?type=FOUND" variant="outline">
+              I found something
+            </Button>
           </div>
         </div>
       </section>
 
-      <section className="bg-gray-50 border-b border-gray-300 py-4 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-2">
-          <span className="font-ui text-xs tracking-wider text-gray-600 mb-2 md:inline md:mb-0 md:mr-2">
-            BROWSE BY CATEGORY
+      {/* Categories */}
+      <section className="stamp pt-8 md:px-16 md:pt-8" style={{ '--i': 5 }}>
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-3">
+          <span className="ui shrink-0 whitespace-nowrap px-4 text-xs md:px-0 md:text-base">
+            Browse by category
           </span>
-          <div className="flex flex-nowrap md:flex-wrap gap-2 overflow-x-auto pb-1">
+          <div className="flex w-full min-w-0 gap-2 overflow-x-auto px-4 pb-2 md:flex-wrap md:overflow-visible md:px-0 md:pb-0 md:gap-3">
             {categoryOptions.map(({ slug, name }) => (
-              <Link
+              <Chip
                 key={slug}
-                to={{
-                  pathname: '/reports',
-                  search: `?categories=${encodeURIComponent(slug)}`,
-                }}
-                className="font-ui shrink-0 px-3 py-1 bg-white border border-gray-300 rounded-md text-xs font-semibold tracking-wider text-gray-800 hover:bg-gray-100 whitespace-nowrap"
+                onClick={() => navigate(`/reports?categories=${encodeURIComponent(slug)}`)}
               >
                 {name}
-              </Link>
+              </Chip>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 py-12">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="font-headline text-lg text-gray-900 mb-0">Recently reported</h2>
-          <Link to="/reports" className="font-ui text-sm font-semibold tracking-wider text-gray-700 hover:underline">
-            View All →
+      {/* Recently reported */}
+      <section className="px-4 py-8 md:px-16 md:py-14">
+        <div
+          className="stamp mb-6 flex flex-wrap items-center justify-between gap-3 md:mb-7"
+          style={{ '--i': 6 }}
+        >
+          <h2 className="text-2xl leading-8 md:text-[32px] md:leading-10">
+            Recently reported
+          </h2>
+          <Link to="/reports" className="ui shrink-0 text-xs text-link md:text-base">
+            View all →
           </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid gap-6 pr-2 md:grid-cols-2">
           {loading ? (
-            <p className="font-body text-sm text-gray-500 col-span-full py-8 text-center">
-              Loading reports...
-            </p>
+            <div className="panel p-6 md:col-span-2">
+              <p className="text-sm leading-6 text-mute">Loading reports...</p>
+            </div>
           ) : error ? (
-            <div className="col-span-full text-center py-8">
-              <p className="font-body text-red-600 text-sm mb-4">{error}</p>
-              <button
-                onClick={handleRetry}
-                className="font-ui text-sm border border-gray-300 px-4 py-2 rounded font-semibold tracking-wider text-gray-700 bg-white hover:bg-gray-50"
-              >
+            <div className="panel p-6 md:col-span-2">
+              <p className="text-sm text-mute">{error}</p>
+              <Button className="mt-4" onClick={handleRetry}>
                 Retry
-              </button>
+              </Button>
             </div>
           ) : sortedReports.length === 0 ? (
-            <p className="font-body text-sm text-gray-500 col-span-full py-8 text-center">
-              No reports yet.
-            </p>
+            <div className="panel p-6 md:col-span-2">
+              <p className="text-sm leading-6 text-mute">No reports yet.</p>
+            </div>
           ) : (
-            sortedReports.map((report) => (
-              <ReportCard key={report.id} report={report} layout="top" />
+            sortedReports.map((report, i) => (
+              <ReportCard
+                key={report.id}
+                report={report}
+                layout="top"
+                className="stamp"
+                style={{ '--i': 7 + i }}
+              />
             ))
           )}
         </div>
       </section>
 
-      <section id="how-it-works" className="bg-gray-50 border-t border-gray-300 py-12 px-4">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="font-headline text-lg text-gray-900 mb-6">How it works</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            <div className="flex overflow-hidden border border-gray-300 rounded-lg bg-white">
-              <div className="w-14 bg-gray-100 border-r border-gray-300 flex items-center justify-center font-headline text-xl text-gray-800 shrink-0">
-                1
+      {/* How it works */}
+      <section
+        id="how-it-works"
+        className="border-t-[3px] border-ink bg-soft px-4 py-12 md:px-16 md:py-16"
+      >
+        <h2 className="mb-6 text-2xl leading-8 md:mb-9 md:text-[32px] md:leading-10">
+          How it works
+        </h2>
+        <div className="grid gap-6 pr-2 md:grid-cols-3">
+          {steps.map(([n, title, description]) => (
+            <div key={n} className="panel flex overflow-hidden">
+              <div className="grid w-14 shrink-0 place-items-center border-r-[3px] border-ink bg-pink md:w-16">
+                <span className="wiggle font-head text-3xl font-bold md:text-[40px]">
+                  {n}
+                </span>
               </div>
-              <div className="p-4">
-                <h3 className="font-headline font-semibold text-gray-900 text-sm mb-1">Report</h3>
-                <p className="font-body text-sm text-gray-600">
-                  Post what you lost or found with a photo, location and date.
+              <div className="grid content-center gap-2 p-4 md:p-6">
+                <h3 className="text-2xl leading-8 md:text-[32px] md:leading-10">
+                  {title}
+                </h3>
+                <p className="text-sm leading-5 text-mute md:text-base md:leading-6">
+                  {description}
                 </p>
               </div>
             </div>
-            <div className="flex overflow-hidden border border-gray-300 rounded-lg bg-white">
-              <div className="w-14 bg-gray-100 border-r border-gray-300 flex items-center justify-center font-headline text-xl text-gray-800 shrink-0">
-                2
-              </div>
-              <div className="p-4">
-                <h3 className="font-headline font-semibold text-gray-900 text-sm mb-1">Match</h3>
-                <p className="font-body text-sm text-gray-600">
-                  We surface likely matches so owners and finders can connect.
-                </p>
-              </div>
-            </div>
-            <div className="flex overflow-hidden border border-gray-300 rounded-lg bg-white">
-              <div className="w-14 bg-gray-100 border-r border-gray-300 flex items-center justify-center font-headline text-xl text-gray-800 shrink-0">
-                3
-              </div>
-              <div className="p-4">
-                <h3 className="font-headline font-semibold text-gray-900 text-sm mb-1">Reunite</h3>
-                <p className="font-body text-sm text-gray-600">
-                  Confirm details, arrange a safe handover, and mark it returned.
-                </p>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
-    </div>
+    </>
   );
 }
