@@ -1,5 +1,5 @@
 // Local fallback for the backend reference endpoints. Mirrors
-// lostfound-backend/mock-data/meta.json exactly. When the backend is available,
+// lost-and-found_backend/mock-data/meta.json exactly. When the backend is available,
 // useReferenceData() replaces these with GET /categories and GET /locations.
 //
 // The API filters by slug, while the UI renders `name`.

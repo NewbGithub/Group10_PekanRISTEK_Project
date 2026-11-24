@@ -8,9 +8,10 @@ import {
 
 const MOCK_KEY = 'reports_mock';
 const MOCK_VERSION_KEY = 'reports_mock_version';
-const MOCK_VERSION = '3';
+const MOCK_VERSION = '4';
 
-// Backend contract: GET /reports defaults to limit=10, max=50.
+// Backend contract: GET /reports defaults to sort=newest, limit=10, max=50.
+const API_DEFAULT_SORT = 'newest';
 const API_DEFAULT_LIMIT = 10;
 const API_MAX_LIMIT = 50;
 // Safety cap for the client-side filter fallback (50 * 40 = 2000 reports).
@@ -22,7 +23,7 @@ const DATE_RANGE_MS = {
   '30d': 30 * 24 * 60 * 60 * 1000,
 };
 
-// Shared with the backend: lostfound-backend/mock-data/reports.json
+// Shared with the backend: lost-and-found_backend/mock-data/reports.json
 // (kept byte-identical in src/data/mockReports.json).
 const MOCK_DATA = mockReportsSeed;
 
@@ -94,6 +95,7 @@ const buildReportsQuery = ({ q, type, category, location, page, limit }) => {
   if (location) params.set('location', location);
   params.set('page', String(page || 1));
   params.set('limit', String(limit || API_DEFAULT_LIMIT));
+  params.set('sort', API_DEFAULT_SORT);
   return params.toString();
 };
 
@@ -331,7 +333,7 @@ const resolveContact = (payload) => {
 };
 
 // Mirrors the multipart fields documented in
-// lostfound-backend/docs/API_CONTRACT.md section 9.
+// lost-and-found_backend/docs/API_CONTRACT.md section 9.
 const CREATE_FIELDS = [
   'type',
   'itemName',

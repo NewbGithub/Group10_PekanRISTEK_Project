@@ -1,12 +1,32 @@
+import mockReports from '../data/mockReports.json';
 import { CATEGORY_OPTIONS, LOCATION_OPTIONS } from '../constants/filters';
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false';
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL;
 
+// The fallback comes from the canonical mock reports, so mock and live API
+// modes filter on exactly the same slugs. Canonical reference options are
+// merged in to keep the documented order and include values no report uses
+// yet (e.g. the "Lainnya" location).
+const uniqueBySlug = (items) => {
+  const seen = new Set();
+  return items.filter((item) => {
+    if (!item?.slug || seen.has(item.slug)) return false;
+    seen.add(item.slug);
+    return true;
+  });
+};
+
+const localOptions = (key, canonical) =>
+  uniqueBySlug([
+    ...canonical,
+    ...mockReports.map((report) => report[key]).filter(Boolean),
+  ]);
+
 const LOCAL_DATA = {
-  categories: CATEGORY_OPTIONS,
-  locations: LOCATION_OPTIONS,
+  categories: localOptions('category', CATEGORY_OPTIONS),
+  locations: localOptions('location', LOCATION_OPTIONS),
 };
 
 let cached = null;
