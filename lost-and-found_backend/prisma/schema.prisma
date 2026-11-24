@@ -1,0 +1,67 @@
+// Skema database. Dibaca oleh Prisma untuk: membuat tabel (migrate) dan membuat Prisma Client (generate).
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ReportType {
+  LOST
+  FOUND
+}
+
+enum ContactMethod {
+  WHATSAPP
+  INSTAGRAM
+  LINE
+  EMAIL
+}
+
+model Category {
+  id      Int      @id @default(autoincrement())
+  slug    String   @unique
+  name    String
+  reports Report[] // sisi "banyak" dari relasi 1-N
+}
+
+model Location {
+  id      Int      @id @default(autoincrement())
+  slug    String   @unique
+  name    String
+  reports Report[]
+}
+
+model Report {
+  id          String     @id @default(uuid())
+  type        ReportType
+  itemName    String     @db.VarChar(100)
+  description String     @db.VarChar(1000)
+
+  categoryId     Int
+  category       Category @relation(fields: [categoryId], references: [id])
+  locationId     Int
+  location       Location @relation(fields: [locationId], references: [id])
+  locationDetail String?  @db.VarChar(100)
+
+  eventDate     DateTime @db.Date
+  imageUrl      String?
+  imagePublicId String?
+
+  reporterName        String        @db.VarChar(60)
+  contactWhatsapp     String?
+  contactInstagram    String?
+  contactLine         String?
+  contactEmail        String?
+  publicContactMethod ContactMethod
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([categoryId])
+  @@index([locationId])
+  @@index([createdAt])
+}
