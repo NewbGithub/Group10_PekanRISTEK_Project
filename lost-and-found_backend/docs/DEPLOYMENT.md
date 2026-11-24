@@ -41,13 +41,14 @@ Examples below use **Neon** (database), **Cloudinary** (images) and **Render** (
 
 ## D. Deploy the API (Render)
 1. Push all code (including `prisma/migrations/`) to GitHub.
-2. On render.com: **New + -> Web Service** -> connect your GitHub repo `lostfound-backend`.
+2. On render.com: **New + -> Web Service** -> connect your GitHub repo `Group10_PekanRISTEK_Project`.
 3. Settings:
 
    | Field | Value |
    |-------|-------|
    | Runtime | Node |
-   | Build Command | `npm install && npx prisma generate && npx prisma migrate deploy && node prisma/seed.js` |
+   | Root Directory | `lost-and-found_backend` |
+   | Build Command | `npm ci && npx prisma generate && npx prisma migrate deploy && npm run seed` |
    | Start Command | `npm start` |
 
    (`migrate deploy` applies your committed migrations to the production DB; the seed is safe to repeat because it uses upsert.)
@@ -58,7 +59,7 @@ Examples below use **Neon** (database), **Cloudinary** (images) and **Render** (
    | `NODE_ENV` | `production` |
    | `STORAGE` | `prisma` |
    | `DATABASE_URL` | Neon connection string |
-   | `CORS_ORIGIN` | your frontend URL, e.g. `https://lostfound-xyz.vercel.app` (no trailing `/`; comma-separate several; include `http://localhost:5173` while testing) |
+   | `CORS_ORIGIN` | your frontend URLs, e.g. `https://temupacil.bensengkey.com,https://group10pekanristekproject.vercel.app,http://localhost:5173` (no trailing `/`; comma-separate several; Vercel preview URLs are allowed automatically) |
    | `CLOUDINARY_CLOUD_NAME` / `_API_KEY` / `_API_SECRET` | from Cloudinary |
    | `APP_TIMEZONE` | `Asia/Jakarta` |
 

@@ -9,9 +9,23 @@ const app = express();
 
 app.disable('x-powered-by'); // jangan umumkan "Express" di header response (keamanan kecil)
 
-// 1) CORS: izinkan hanya alamat frontend yang terdaftar di CORS_ORIGIN
+// 1) CORS: izinkan alamat frontend yang terdaftar di CORS_ORIGIN
+//    plus URL preview Vercel (contoh: group10pekanristekproject-abc123.vercel.app).
+const VERCEL_PREVIEW = /^https:\/\/group10pekanristekproject-[a-z0-9-]+\.vercel\.app$/;
+
 app.use(cors({
-  origin: config.corsOrigins.includes('*') ? '*' : config.corsOrigins,
+  origin: (origin, callback) => {
+    // Tanpa Origin (server-to-server, curl, health check platform) -> izinkan.
+    if (!origin) return callback(null, true);
+    // CORS_ORIGIN=* -> izinkan semua.
+    if (config.corsOrigins.includes('*')) return callback(null, true);
+    // Origin terdaftar atau URL preview Vercel -> izinkan.
+    if (config.corsOrigins.includes(origin) || VERCEL_PREVIEW.test(origin)) {
+      return callback(null, true);
+    }
+    // Selain itu tolak tanpa melempar error (browser yang memblokir response).
+    return callback(null, false);
+  },
   exposedHeaders: ['Location'], // agar frontend boleh membaca header Location
 }));
 
