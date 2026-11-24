@@ -19,7 +19,7 @@ A full-stack application enabling users to report and track lost or found items 
 | Report Detail Page | `/reports/:id` | Wajib | Halaman detail khusus untuk menampilkan informasi lengkap 1 laporan. |
 | Report Submission Form | `/create` | Wajib | Formulir kirim laporan Lost atau Found dengan opsi unggah foto. |
 | Search & Filtering | `/reports` (Query) | Opsional | Cari nama barang & filter tipe/kategori/lokasi (dikerjakan jika waktu cukup). |
-| Image Placeholder & Contact Privacy | - | Wajib | Jika `imageUrl` bernilai `null`, frontend menampilkan placeholder. API hanya mengembalikan kontak publik yang dipilih pelapor (`contact.method` + `contact.value`). |
+| Image Placeholder & Contact Privacy | - | Opsional | Jika `imageUrl` bernilai `null`, frontend menampilkan placeholder. API hanya mengembalikan kontak publik yang dipilih pelapor (`contact.method` + `contact.value`). |
 
 ## 3. Desain Database (Tabel Report)
 
