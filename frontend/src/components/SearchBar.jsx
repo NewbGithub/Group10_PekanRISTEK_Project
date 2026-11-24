@@ -72,7 +72,7 @@ export default function SearchBar() {
         <input
           type="text"
           aria-label="Search items"
-          className="h-14 w-full rounded-[10px] border-[3px] border-ink bg-white px-4 shadow-hard placeholder:text-mute md:h-12 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:shadow-none"
+          className="h-14 w-full rounded-[10px] border-[3px] border-ink bg-white px-4 shadow-hard placeholder:text-mute focus:outline-none md:h-12 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:shadow-none"
           placeholder="Search items, places…"
           maxLength={100}
           value={query}
@@ -82,7 +82,7 @@ export default function SearchBar() {
           aria-label="Filter by location"
           value={locationFilter}
           onChange={(e) => setLocationFilter(e.target.value)}
-          className="ui max-w-[11.875rem] shrink-0 rounded-[10px] border-[3px] border-ink bg-white px-3 py-2 text-[0.6875rem] md:text-sm"
+          className="ui max-w-[11.875rem] shrink-0 rounded-[10px] border-[3px] border-ink bg-white px-3 py-2 text-[0.6875rem] focus:outline-none md:text-sm"
         >
           <option value="ALL">All locations</option>
           {locationOptions.map(({ slug, name }) => (

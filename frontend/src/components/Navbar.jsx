@@ -7,9 +7,26 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // How It Works is a hash link, so NavLink cannot tell it apart from Home.
+  // The hash is the single source of truth for the desktop active box.
+  const howItWorksActive =
+    location.pathname === '/' && location.hash === '#how-it-works';
+
   const toggleMenu = () => setMobileMenuOpen((prev) => !prev);
   const closeMenu = () => setMobileMenuOpen(false);
 
+  // Desktop active link floats in a light box; mobile keeps the black bar.
+  const desktopActiveBox =
+    'md:border-ink md:bg-white md:text-ink md:shadow-[0_6px_14px_rgba(17,17,17,0.18)] md:-translate-y-px';
+  const navClass = (isActive) =>
+    `ui block px-4 py-2 text-base leading-6 md:rounded-[10px] md:border-[3px] ${
+      isActive
+        ? `bg-ink text-yellow ${desktopActiveBox}`
+        : 'md:border-transparent flip'
+    }`;
+  const desktopLink = ({ isActive }) => navClass(isActive);
+
+  // Mobile menu keeps its original styling.
   const activeLink = ({ isActive }) =>
     `ui block px-4 py-2 text-base leading-6 ${
       isActive ? 'bg-ink text-yellow' : 'flip'
@@ -47,13 +64,17 @@ export default function Navbar() {
         </div>
 
         <nav className="hidden md:flex" aria-label="Main">
-          <NavLink to="/" className={activeLink}>
+          <NavLink to="/" className={desktopLink}>
             Home
           </NavLink>
-          <NavLink to="/reports" className={activeLink}>
+          <NavLink to="/reports" className={desktopLink}>
             Browse Items
           </NavLink>
-          <NavLink to="/#how-it-works" onClick={goToHowItWorks} className={plainLink}>
+          <NavLink
+            to="/#how-it-works"
+            onClick={goToHowItWorks}
+            className={navClass(howItWorksActive)}
+          >
             How It Works
           </NavLink>
         </nav>

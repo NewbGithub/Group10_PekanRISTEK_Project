@@ -23,6 +23,9 @@
   --yellow: #FFD23F;
   --ease: cubic-bezier(0.2, 0, 0, 1);
 
+  /* Keep native controls (select popup, autofill) light even in dark-mode OS,
+     otherwise they render as a black box over the search bar. */
+  color-scheme: light;
   color: var(--ink);
   background: #FFF3D6;
   -webkit-font-smoothing: antialiased;

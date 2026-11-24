@@ -101,7 +101,7 @@ export default function HomePage() {
               aria-label="Search lost and found items"
               placeholder="What did you lose or find?"
               maxLength={100}
-              className="h-14 w-full rounded-[10px] border-[3px] border-ink bg-white px-4 shadow-hard placeholder:text-mute md:h-12 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:shadow-none"
+              className="h-14 w-full rounded-[10px] border-[3px] border-ink bg-white px-4 shadow-hard placeholder:text-mute focus:outline-none md:h-12 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:shadow-none"
             />
             <span className="ui hidden text-[0.9375rem] md:block">All locations</span>
             <Button type="submit" className="w-full md:w-auto">
