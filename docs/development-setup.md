@@ -14,7 +14,7 @@ npm install
 
 Salin `.env.example` menjadi `.env` (di Windows: `copy .env.example .env`), lalu pastikan alamat server Backend sudah benar:
 ```env
-VITE_API_URL=http://localhost:3000
+VITE_API_BASE_URL=http://localhost:3000
 ```
 
 Jalankan server pengembangan Frontend:
@@ -24,24 +24,45 @@ npm run dev
 Aplikasi Frontend dapat diakses di `http://localhost:5173`.
 
 ## 3. Menjalankan Backend (Node.js + Express)
+
+Folder backend ada di `lost-and-found_backend/` (tersedia di branch `main` dan
+`lost-and-found_backend`).
 ```bash
-cd backend
+cd lost-and-found_backend
 npm install
 ```
 
-Salin `.env.example` menjadi `.env` dan lengkapi variabel lingkungan yang dibutuhkan:
+Salin `.env.example` menjadi `.env`. Untuk Checkpoint 2 cukup `STORAGE=memory`
+(tanpa PostgreSQL), dan `CORS_ORIGIN` harus sama dengan alamat frontend:
 ```env
 PORT=3000
-DATABASE_URL="postgresql://user:password@localhost:5432/lost_and_found"
-CLOUDINARY_CLOUD_NAME="your_cloud_name"
-CLOUDINARY_API_KEY="your_api_key"
-CLOUDINARY_API_SECRET="your_api_secret"
+NODE_ENV=development
+CORS_ORIGIN=http://localhost:5173
+APP_TIMEZONE=Asia/Jakarta
+STORAGE=memory
+
+# Wajib hanya jika STORAGE=prisma
+DATABASE_URL=
+
+# Wajib hanya jika ingin upload foto (Checkpoint 3)
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
 
 Jalankan server Backend:
 ```bash
 npm run dev
 ```
+
+Cek `http://localhost:3000/health`. Dengan `STORAGE=memory`, API langsung berisi
+12 laporan mock dan tidak butuh database. Jika frontend dijalankan di port lain
+(mis. `5174`), tambahkan port itu ke `CORS_ORIGIN` (pisahkan dengan koma) agar
+request tidak diblokir CORS.
+
+> Jika folder backend belum punya `package.json` (hanya ada
+> `package.reference.json`), buat `package.json` dan install dependency sesuai
+> catatan di file referensi tersebut sebelum menjalankan `npm run dev`.
 
 ## 4. Aturan Kolaborasi Git
 - Jangan *push* langsung fitur baru ke `main`.

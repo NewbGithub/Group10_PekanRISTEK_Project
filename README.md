@@ -23,7 +23,7 @@ A full-stack application enabling users to report and track lost or found items 
 
 ## 3. Desain Database (Tabel Report)
 
-Schema mengikuti backend: lihat `lostfound-backend/docs/DATABASE_DESIGN.md` sebagai **source of truth**.
+Schema mengikuti backend: lihat `lost-and-found_backend/docs/DATABASE_DESIGN.md` sebagai **source of truth**.
 
 | Nama Field | Tipe Data (Prisma/DB) | Sifat | Keterangan |
 | --- | --- | --- | --- |
@@ -45,7 +45,7 @@ Schema mengikuti backend: lihat `lostfound-backend/docs/DATABASE_DESIGN.md` seba
 
 ## 4. Kontrak REST API
 
-Kontrak lengkap: `lostfound-backend/docs/API_CONTRACT.md`. Ringkasan endpoint yang dipakai frontend:
+Kontrak lengkap: `lost-and-found_backend/docs/API_CONTRACT.md`. Ringkasan endpoint yang dipakai frontend:
 
 | Metode HTTP | Endpoint | Kegunaan | Format Request (Body / Query) | Format Response Sukses |
 | --- | --- | --- | --- | --- |
@@ -58,9 +58,10 @@ Catatan frontend:
 - Pencarian memakai `q`, bukan `search`.
 - `category` dan `location` adalah **slug**, bukan nama tampilan (mis. `electronics`, `gedung-a`).
 - Pagination dibaca dari `meta.pagination.totalItems` / `meta.pagination.totalPages`.
-- URL frontend memakai **slug** untuk kategori dan lokasi (`?categories=keys&location=gedung-a`); daftar slug/name diambil dari `GET /categories` dan `GET /locations` via `useReferenceData()`, dengan fallback lokal dari `mock-data/meta.json`.
+- URL frontend memakai **slug** untuk kategori dan lokasi (`?categories=keys&location=gedung-a`); daftar slug/name diambil dari `GET /categories` dan `GET /locations` via `useReferenceData()`, dengan fallback lokal dari `lost-and-found_backend/mock-data/meta.json`.
 - `?dateRange=` tetap filter client-side (backend belum punya parameter ini); multi-kategori digabung client-side karena backend hanya menerima satu `category`.
 - Variabel environment frontend: `VITE_API_BASE_URL` (default `http://localhost:3000`) dan `VITE_USE_MOCK` (default `true`).
+- Backend hanya mengizinkan origin yang terdaftar di `CORS_ORIGIN` (default `http://localhost:5173`); jalankan Vite di port itu atau tambahkan port lain ke `.env` backend.
 
 ## 5. Daftar HTTP Status Codes
 
@@ -79,7 +80,7 @@ Catatan frontend:
 
 ## 7. Mock Data
 
-Sumber data bersama ada di `lostfound-backend/mock-data/reports.json` dan disalin persis ke `frontend/src/data/mockReports.json`. File `meta.json` berisi daftar kategori, lokasi, tipe laporan, dan metode kontak.
+Sumber data bersama ada di `lost-and-found_backend/mock-data/reports.json` dan disalin persis ke `frontend/src/data/mockReports.json`. File `meta.json` berisi daftar kategori, lokasi, tipe laporan, dan metode kontak. Folder backend berada di `lost-and-found_backend/` (branch `main` dan `lost-and-found_backend`).
 
 ```[
   {

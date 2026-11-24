@@ -9,7 +9,7 @@
 | **Report Detail Page** | `/reports/:id` | **Wajib** | Halaman detail khusus untuk menampilkan informasi lengkap 1 laporan. |
 | **Report Submission Form** | `/create` | **Wajib** | Formulir kirim laporan *Lost* atau *Found* dengan opsi unggah foto. |
 | **Search & Filtering** | `/reports` *(Query)* | **Opsional (FE 1)** | Cari berdasarkan nama barang serta filter berdasarkan tipe (`LOST`/`FOUND`), kategori, dan lokasi. |
-| **Image Placeholder & Contact Privacy** | - | **Dihapus** | Tidak menggunakan gambar default jika foto kosong (`imageUrl: null`), dan kontak pelapor ditampilkan langsung sesuai input. |
+| **Image Placeholder & Contact Privacy** | - | **Wajib (CP3)** | Jika `imageUrl: null`, frontend menampilkan placeholder teks kategori (bukan gambar default). Sesuai `API_CONTRACT.md`, pelapor memilih satu `publicContactMethod`; API hanya mengembalikan metode tersebut sebagai `contact: { method, value }` — kontak lainnya tidak pernah diekspos. |
 
 ## 2. Alur Pengguna (User Flow)
 1. **Melihat Laporan:** Pengguna membuka web (`/`) dan melihat halaman Home, lalu dapat menavigasi ke `/reports` untuk melihat daftar barang hilang dan ditemukan.

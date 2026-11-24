@@ -1,7 +1,7 @@
 # Database Design — Frontend View
 
 The **source of truth** is
-[`lostfound-backend/docs/DATABASE_DESIGN.md`](../lostfound-backend/docs/DATABASE_DESIGN.md).
+[`lost-and-found_backend/docs/DATABASE_DESIGN.md`](../lost-and-found_backend/docs/DATABASE_DESIGN.md).
 The frontend does not own the schema; this file only summarizes what the UI can
 expect from the API.
 
@@ -46,7 +46,7 @@ the API stable slugs for filtering.
 
 ## Reference data
 
-Seeded from `lostfound-backend/mock-data/meta.json`:
+Seeded from `lost-and-found_backend/mock-data/meta.json`:
 
 - **Categories:** `card-document`, `electronics`, `bags-wallets`, `drinkware`,
   `keys`, `clothing`, `stationery`, `other`
@@ -54,7 +54,8 @@ Seeded from `lostfound-backend/mock-data/meta.json`:
   `sekretariat`, `pos-satpam`, `musholla`, `area-parkir`, `lainnya`
 
 The frontend loads the names and slugs from `GET /categories` and
-`GET /locations`, and keeps a local mirror of `mock-data/meta.json` in
+`GET /locations`, and keeps a local mirror of
+`lost-and-found_backend/mock-data/meta.json` in
 `frontend/src/constants/filters.js` as a fallback.
 
 ## Important differences from the old draft

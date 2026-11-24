@@ -2,8 +2,12 @@
 
 The **source of truth** is the backend contract:
 
-- [`lostfound-backend/docs/API_CONTRACT.md`](../lostfound-backend/docs/API_CONTRACT.md)
-- [`lostfound-backend/docs/DATABASE_DESIGN.md`](../lostfound-backend/docs/DATABASE_DESIGN.md)
+- [`lost-and-found_backend/docs/API_CONTRACT.md`](../lost-and-found_backend/docs/API_CONTRACT.md)
+- [`lost-and-found_backend/docs/DATABASE_DESIGN.md`](../lost-and-found_backend/docs/DATABASE_DESIGN.md)
+
+The backend lives in `lost-and-found_backend/` on the `main` and
+`lost-and-found_backend` branches, so those links resolve once the backend is
+merged/checked out next to this branch.
 
 This file only records how the frontend calls that contract. If the two ever
 disagree, the backend document wins and the frontend must follow it.
@@ -11,8 +15,10 @@ disagree, the backend document wins and the frontend must follow it.
 **Base URL:** `VITE_API_BASE_URL` (default in `frontend/.env.example`:
 `http://localhost:3000`).
 
-> Mock mode is the default (`VITE_USE_MOCK !== 'false'`). Set
-> `VITE_USE_MOCK=false` once the backend `/reports` routes are implemented.
+> Mock mode is the default (`VITE_USE_MOCK !== 'false'`). The backend now
+> implements `/reports`, `/reports/:id`, `/categories`, and `/locations`, so set
+> `VITE_USE_MOCK=false` in `frontend/.env` to use the real API. The backend only
+> allows origins listed in `CORS_ORIGIN` (default `http://localhost:5173`).
 
 ## 1. Response envelope
 
@@ -47,11 +53,14 @@ backend `message` on failure.
 | `GET` | `/reports` | Home (recent 4), `/reports` listing |
 | `GET` | `/reports/:id` | `/reports/:id` detail page |
 | `POST` | `/reports` | `/create` submission |
+| `GET` | `/categories` | Category filter and form dropdowns |
+| `GET` | `/locations` | Location filter and form dropdowns |
 
 `GET /categories` and `GET /locations` are loaded by `useReferenceData()` into
-the filter and location dropdowns. `frontend/src/constants/filters.js` holds a
-local mirror of `lostfound-backend/mock-data/meta.json` as a fallback so the UI
-renders immediately and still works while those endpoints are unimplemented.
+the filter and location dropdowns. They are implemented by the backend;
+`frontend/src/constants/filters.js` keeps a local mirror of
+`lost-and-found_backend/mock-data/meta.json` only as an offline/mock fallback
+(and when the API request fails).
 
 ## 3. `GET /reports`
 
@@ -183,7 +192,7 @@ Notes for the UI:
 ## 8. Reference values
 
 Categories and locations come from `GET /categories` and `GET /locations`.
-`lostfound-backend/mock-data/meta.json` is mirrored in
+`lost-and-found_backend/mock-data/meta.json` is mirrored in
 `frontend/src/constants/filters.js` only as the offline/mock fallback.
 
 | Category name | Slug |
