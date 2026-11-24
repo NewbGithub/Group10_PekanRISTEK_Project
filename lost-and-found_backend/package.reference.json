@@ -1,0 +1,27 @@
+{
+  "_note": "REFERENSI saja. Jangan salin mentah-mentah: package.json asli dibuat oleh `npm init` + `npm install`. Cocokkan bagian scripts dan prisma.seed. Nomor versi akan berbeda, itu normal.",
+  "name": "lostfound-backend",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test",
+    "build": "prisma generate && prisma migrate deploy",
+    "migrate:dev": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
+    "seed": "node prisma/seed.js",
+    "seed:demo": "node prisma/seed.js --with-reports"
+  },
+  "prisma": { "seed": "node prisma/seed.js" },
+  "dependencies": {
+    "@prisma/client": "^6",
+    "cloudinary": "latest",
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "multer": "latest",
+    "prisma": "^6"
+  },
+  "devDependencies": { "nodemon": "latest" }
+}

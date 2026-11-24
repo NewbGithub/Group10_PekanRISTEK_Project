@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Button from './Button';
-import catDoodleLogo from './CatDoodleLogo-removebg-preview.png';
+import pandaLogo from './panda-icon-8264976-512.png';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -53,7 +53,7 @@ export default function Navbar() {
       <div className="flex items-center justify-between px-4 py-4 md:px-16 md:py-5">
         <NavLink to="/" className="flex items-center gap-2">
           <img
-            src={catDoodleLogo}
+            src={pandaLogo}
             alt=""
             aria-hidden="true"
             className="wiggle block h-10 w-10 object-cover"
