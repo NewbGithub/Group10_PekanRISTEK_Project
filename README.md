@@ -75,10 +75,7 @@ Catatan frontend:
 | `415` | Unsupported Media Type | File gambar bukan JPEG/PNG/WEBP. |
 | `500` | Internal Server Error | Terjadi gangguan di server Backend, database, atau Cloudinary. |
 
-## 6. MVP (Minimum Viable Product)
-...
-
-## 7. Mock Data
+## 6. Mock Data
 
 Sumber data bersama ada di `lost-and-found_backend/mock-data/reports.json` dan disalin persis ke `frontend/src/data/mockReports.json`. File `meta.json` berisi daftar kategori, lokasi, tipe laporan, dan metode kontak. Folder backend berada di `lost-and-found_backend/` (branch `main` dan `lost-and-found_backend`).
 
