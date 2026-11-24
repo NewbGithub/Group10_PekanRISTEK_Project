@@ -102,10 +102,10 @@ export default function ReportListPage() {
   const endIndex = Math.min(currentPage * limit, total);
 
   return (
-    <div className="px-4 pb-14 pt-8 md:px-16 md:pt-12">
+    <div className="mx-auto w-full max-w-full px-4 pb-14 pt-8 lg:px-6 lg:pt-12">
       <div className="stamp" style={{ '--i': 1 }}>
         <p className="ui text-xs text-mute md:text-sm">Home / Browse all</p>
-        <h1 className="mt-2 text-[32px] leading-10 md:text-[44px] md:leading-[52px]">
+        <h1 className="mt-2 text-[2rem] leading-10 md:text-[2.75rem] md:leading-[3.25rem]">
           Browse all reports
         </h1>
         <p className="mt-2 text-sm leading-5 text-mute md:text-lg md:leading-7">
@@ -143,13 +143,13 @@ export default function ReportListPage() {
         )}
       </div>
 
-      <div className="mt-6 lg:mt-8 lg:grid lg:grid-cols-[264px_1fr] lg:gap-8">
+      <div className="mt-6 lg:mt-8 lg:grid lg:grid-cols-[14rem_1fr] lg:gap-8">
         <div className="stamp hidden lg:block" style={{ '--i': 3 }}>
           <FilterPanel key={filterKey} />
         </div>
 
         <section aria-label="Results">
-          <p className="ui mb-4 text-xs text-mute md:text-[15px]">
+          <p className="ui mb-4 text-xs text-mute md:text-[0.9375rem]">
             {loading
               ? 'Loading reports...'
               : `Showing ${startIndex}–${endIndex} of ${total} reports`}
@@ -178,11 +178,12 @@ export default function ReportListPage() {
               </Button>
             </div>
           ) : (
-            <div className="grid gap-6 pr-2 xl:grid-cols-2">
+            <div className="grid grid-cols-2 gap-4 pr-2 md:gap-6">
               {reports.map((report, i) => (
                 <ReportCard
                   key={report.id}
                   report={report}
+                  layout="top"
                   className="stamp"
                   style={{ '--i': 4 + i }}
                 />

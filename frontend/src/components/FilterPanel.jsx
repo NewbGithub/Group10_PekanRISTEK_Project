@@ -22,7 +22,7 @@ function Row({ checked, children, onClick, radio }) {
       type="button"
       aria-pressed={checked}
       onClick={onClick}
-      className="flip flex w-full items-center gap-2 px-2 py-2 text-left text-[15px]"
+      className="flip flex w-full items-center gap-2 px-2 py-2 text-left text-[0.9375rem]"
     >
       <span
         aria-hidden="true"

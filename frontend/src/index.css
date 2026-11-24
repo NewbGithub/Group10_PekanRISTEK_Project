@@ -63,6 +63,14 @@ body {
 }
 
 @layer base {
+  /* Global scale: matches the design as reviewed at 80% browser zoom, so
+     the default 100% view has the same proportions. rem-based sizing
+     (Tailwind spacing, type, containers) scales with this; viewport units
+     such as min-h-screen stay tied to the viewport. */
+  html {
+    font-size: 80%;
+  }
+
   h1,
   h2,
   h3,

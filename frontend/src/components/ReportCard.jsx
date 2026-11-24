@@ -25,8 +25,8 @@ export default function ReportCard({
 }) {
   const stack = layout === 'top';
   const photo = stack
-    ? 'h-36 border-b-[3px] border-ink md:h-auto md:w-[168px] md:shrink-0 md:border-b-0 md:border-r-[3px]'
-    : 'w-24 shrink-0 border-r-[3px] border-ink md:w-[168px]';
+    ? 'h-36 border-b-[3px] border-ink md:h-auto md:w-[13.125rem] md:shrink-0 md:border-b-0 md:border-r-[3px]'
+    : 'w-24 shrink-0 border-r-[3px] border-ink md:w-[13.125rem]';
   const label = (report.category?.name || 'ITEM').toUpperCase();
   const time = timeAgo(report.createdAt);
 
@@ -47,7 +47,7 @@ export default function ReportCard({
       <div className="flex min-w-0 flex-1 flex-col gap-2 p-4 md:p-6">
         <div className="flex items-center justify-between gap-2">
           <Badge status={report.type} />
-          {stack && <span className="text-xs text-mute md:text-[13px]">{time}</span>}
+          {stack && <span className="text-xs text-mute md:text-[0.8125rem]">{time}</span>}
         </div>
         <h3 className="text-lg leading-6 md:text-xl md:leading-7">
           {report.itemName}

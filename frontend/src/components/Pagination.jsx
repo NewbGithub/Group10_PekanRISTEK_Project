@@ -40,7 +40,7 @@ export default function Pagination({ page, totalPages }) {
             type="button"
             onClick={() => goToPage(p)}
             aria-current={active ? 'page' : undefined}
-            className={`press ui grid h-11 w-11 place-items-center rounded-full text-[15px] ${
+            className={`press ui grid h-11 w-11 place-items-center rounded-full text-[0.9375rem] ${
               active ? 'bg-pink' : 'bg-white'
             }`}
           >

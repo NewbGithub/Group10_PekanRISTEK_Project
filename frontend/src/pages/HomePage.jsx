@@ -74,9 +74,9 @@ export default function HomePage() {
     <>
       {/* Hero */}
       <section className="border-b-[3px] border-ink bg-yellow px-4 py-10 md:px-16 md:py-24">
-        <div className="mx-auto max-w-[900px] md:text-center">
+        <div className="mx-auto max-w-[56.25rem] md:text-center">
           <h1
-            className="stamp text-[40px] leading-[48px] md:text-[64px] md:leading-[72px]"
+            className="stamp text-[2.5rem] leading-[3rem] md:text-[4rem] md:leading-[4.5rem]"
             style={{ '--i': 1 }}
           >
             Lost something?
@@ -84,7 +84,7 @@ export default function HomePage() {
             Let’s find it.
           </h1>
           <p
-            className="stamp mt-6 text-base leading-6 text-[#2B2B2B] md:mx-auto md:max-w-[640px] md:text-xl md:leading-7"
+            className="stamp mt-6 text-base leading-6 text-[#2B2B2B] md:mx-auto md:max-w-[40rem] md:text-xl md:leading-7"
             style={{ '--i': 2 }}
           >
             Search reported items or post your own. Our community helps lost
@@ -92,7 +92,7 @@ export default function HomePage() {
           </p>
           <form
             onSubmit={submitSearch}
-            className="stamp mt-6 hidden gap-4 md:mx-auto md:grid md:max-w-[760px] md:grid-cols-[1fr_auto_auto] md:items-center md:rounded-[10px] md:border-[3px] md:border-ink md:bg-white md:p-2 md:pl-7 md:shadow-hard"
+            className="stamp mt-6 hidden gap-4 md:mx-auto md:grid md:max-w-[47.5rem] md:grid-cols-[1fr_auto_auto] md:items-center md:rounded-[10px] md:border-[3px] md:border-ink md:bg-white md:p-2 md:pl-7 md:shadow-hard"
             style={{ '--i': 3 }}
           >
             <input
@@ -103,7 +103,7 @@ export default function HomePage() {
               maxLength={100}
               className="h-14 w-full rounded-[10px] border-[3px] border-ink bg-white px-4 shadow-hard placeholder:text-mute md:h-12 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:shadow-none"
             />
-            <span className="ui hidden text-[15px] md:block">All locations</span>
+            <span className="ui hidden text-[0.9375rem] md:block">All locations</span>
             <Button type="submit" className="w-full md:w-auto">
               Search
             </Button>
@@ -148,7 +148,7 @@ export default function HomePage() {
           className="stamp mb-6 flex flex-wrap items-center justify-between gap-3 md:mb-7"
           style={{ '--i': 6 }}
         >
-          <h2 className="text-2xl leading-8 md:text-[32px] md:leading-10">
+          <h2 className="text-2xl leading-8 md:text-[2rem] md:leading-10">
             Recently reported
           </h2>
           <Link to="/reports" className="ui shrink-0 text-xs text-link md:text-base">
@@ -190,19 +190,19 @@ export default function HomePage() {
         id="how-it-works"
         className="border-t-[3px] border-ink bg-soft px-4 py-12 md:px-16 md:py-16"
       >
-        <h2 className="mb-6 text-2xl leading-8 md:mb-9 md:text-[32px] md:leading-10">
+        <h2 className="mb-6 text-2xl leading-8 md:mb-9 md:text-[2rem] md:leading-10">
           How it works
         </h2>
         <div className="grid gap-6 pr-2 md:grid-cols-3">
           {steps.map(([n, title, description]) => (
             <div key={n} className="panel flex overflow-hidden">
               <div className="grid w-14 shrink-0 place-items-center border-r-[3px] border-ink bg-pink md:w-16">
-                <span className="wiggle font-head text-3xl font-bold md:text-[40px]">
+                <span className="wiggle font-head text-3xl font-bold md:text-[2.5rem]">
                   {n}
                 </span>
               </div>
               <div className="grid content-center gap-2 p-4 md:p-6">
-                <h3 className="text-2xl leading-8 md:text-[32px] md:leading-10">
+                <h3 className="text-2xl leading-8 md:text-[2rem] md:leading-10">
                   {title}
                 </h3>
                 <p className="text-sm leading-5 text-mute md:text-base md:leading-6">

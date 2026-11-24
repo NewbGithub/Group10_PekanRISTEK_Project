@@ -82,7 +82,7 @@ export default function SearchBar() {
           aria-label="Filter by location"
           value={locationFilter}
           onChange={(e) => setLocationFilter(e.target.value)}
-          className="ui max-w-[190px] shrink-0 rounded-[10px] border-[3px] border-ink bg-white px-3 py-2 text-[11px] md:text-sm"
+          className="ui max-w-[11.875rem] shrink-0 rounded-[10px] border-[3px] border-ink bg-white px-3 py-2 text-[0.6875rem] md:text-sm"
         >
           <option value="ALL">All locations</option>
           {locationOptions.map(({ slug, name }) => (

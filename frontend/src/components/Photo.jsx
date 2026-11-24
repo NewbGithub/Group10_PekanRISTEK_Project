@@ -36,7 +36,7 @@ export default function Photo({
           onError={() => setFailed(true)}
         />
       ) : (
-        <span className="ui text-[11px] leading-4 md:text-[13px]">{label}</span>
+        <span className="ui text-[0.6875rem] leading-4 md:text-[0.8125rem]">{label}</span>
       )}
     </div>
   );

@@ -11,7 +11,7 @@ export default function Toggle({ options, value, onChange, className = '' }) {
           type="button"
           aria-pressed={value === o.value}
           onClick={() => onChange(o.value)}
-          className={`ui flex-1 rounded-[10px] px-4 py-2 text-[13px] leading-6 md:flex-none md:px-6 md:text-[15px] ${
+          className={`ui flex-1 rounded-[10px] px-4 py-2 text-[0.8125rem] leading-6 md:flex-none md:px-6 md:text-[0.9375rem] ${
             value === o.value ? 'bg-ink text-cream' : 'flip'
           }`}
         >
