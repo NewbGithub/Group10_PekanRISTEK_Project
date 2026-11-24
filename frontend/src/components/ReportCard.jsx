@@ -1,5 +1,6 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Badge from './Badge';
+import Photo from './Photo';
 
 function timeAgo(dateString) {
   const date = new Date(dateString);
@@ -15,51 +16,52 @@ function timeAgo(dateString) {
   return 'Just now';
 }
 
-export default function ReportCard({ report, layout = 'side' }) {
-  const placeholder = (report.category?.name || 'ITEM').toUpperCase();
-  const isTop = layout === 'top';
-  const [imageFailed, setImageFailed] = useState(false);
-
-  const handleImageError = () => {
-    setImageFailed(true);
-  };
+/** Reported-item card. `stack` = photo on top on mobile, left from md up. */
+export default function ReportCard({
+  report,
+  layout = 'side',
+  className = '',
+  style,
+}) {
+  const stack = layout === 'top';
+  const photo = stack
+    ? 'h-36 border-b-[3px] border-ink md:h-auto md:w-[168px] md:shrink-0 md:border-b-0 md:border-r-[3px]'
+    : 'w-24 shrink-0 border-r-[3px] border-ink md:w-[168px]';
+  const label = (report.category?.name || 'ITEM').toUpperCase();
+  const time = timeAgo(report.createdAt);
 
   return (
-    <Link to={`/reports/${report.id}`} className="block w-full min-w-0">
-      <div className={`w-full min-w-0 overflow-hidden border border-gray-300 rounded-lg bg-white ${isTop ? 'flex flex-col' : 'flex flex-row'}`}>
-        <div className={`bg-gray-100 flex items-center justify-center shrink-0 ${isTop ? 'w-full h-48 border-b border-gray-300' : 'w-28 md:w-40 self-stretch border-r border-gray-300'}`}>
-          {report.imageUrl && !imageFailed ? (
-            <img
-              src={report.imageUrl}
-              alt={report.itemName}
-              className="w-full h-full object-cover max-w-full"
-              loading="lazy"
-              onError={handleImageError}
-            />
-          ) : (
-            <span className="font-ui text-xs tracking-wider text-gray-500">{placeholder}</span>
-          )}
+    <Link
+      to={`/reports/${report.id}`}
+      style={style}
+      className={`press-card flex overflow-hidden rounded-[10px] bg-white ${
+        stack ? 'flex-col md:flex-row' : 'flex-row'
+      } ${className}`}
+    >
+      <Photo
+        index={report.id}
+        label={label}
+        imageUrl={report.imageUrl}
+        className={photo}
+      />
+      <div className="flex min-w-0 flex-1 flex-col gap-2 p-4 md:p-6">
+        <div className="flex items-center justify-between gap-2">
+          <Badge status={report.type} />
+          {stack && <span className="text-xs text-mute md:text-[13px]">{time}</span>}
         </div>
-        <div className={`flex-1 min-w-0 flex flex-col gap-1 ${isTop ? 'p-4' : 'p-3'}`}>
-          <div className="flex justify-between items-start gap-2">
-            <span className="font-ui text-xs tracking-wider border border-gray-300 px-2 py-1 rounded text-gray-600 bg-gray-50">
-              {report.type}
-            </span>
-            <span className="font-body text-xs text-gray-500 whitespace-nowrap">
-              {timeAgo(report.createdAt)}
-            </span>
-          </div>
-          <h3 className={`font-headline font-semibold text-gray-900 ${isTop ? '' : 'truncate'}`}>
-            {report.itemName}
-          </h3>
-          <p className="font-body text-sm text-gray-500 truncate">{report.location?.name}</p>
-          <p className={`font-body text-sm text-gray-600 ${isTop ? 'line-clamp-2' : 'line-clamp-1'}`}>
-            {report.description}
-          </p>
-          <span className={`font-ui text-sm tracking-wider hover:underline mt-auto ${isTop ? 'block' : 'hidden md:inline-flex'}`}>
-            View Details →
-          </span>
-        </div>
+        <h3 className="text-lg leading-6 md:text-xl md:leading-7">
+          {report.itemName}
+        </h3>
+        <p className="text-xs leading-4 text-mute md:text-sm md:leading-5">
+          {report.location?.name}
+        </p>
+        <p
+          className={`text-sm leading-5 text-mute ${stack ? '' : 'hidden md:block'}`}
+        >
+          {report.description}
+        </p>
+        {!stack && <span className="text-xs text-mute md:hidden">{time}</span>}
+        <span className="ui mt-auto text-xs text-link">View details →</span>
       </div>
     </Link>
   );

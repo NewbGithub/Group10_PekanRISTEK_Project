@@ -1,35 +1,43 @@
-import { useId, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toCategorySlug } from '../constants/filters';
 import useReferenceData from '../hooks/useReferenceData';
+import Button from './Button';
 
 const TYPE_OPTIONS = [
-  { value: 'ALL', label: 'ALL REPORTS' },
-  { value: 'LOST', label: 'LOST' },
-  { value: 'FOUND', label: 'FOUND' },
+  { value: 'ALL', label: 'All reports' },
+  { value: 'LOST', label: 'Lost' },
+  { value: 'FOUND', label: 'Found' },
 ];
 
 const DATE_OPTIONS = [
-  { value: '24h', label: 'LAST 24 HOURS' },
-  { value: '7d', label: 'LAST 7 DAYS' },
-  { value: '30d', label: 'LAST 30 DAYS' },
+  { value: '24h', label: 'Last 24 hours' },
+  { value: '7d', label: 'Last 7 days' },
+  { value: '30d', label: 'Last 30 days' },
 ];
 
-function OptionIndicator({ checked }) {
+function Row({ checked, children, onClick, radio }) {
   return (
-    <span
-      aria-hidden="true"
-      className={`w-5 h-5 rounded-md border border-gray-400 shrink-0 transition-colors ${
-        checked ? 'bg-gray-800 border-gray-800' : 'bg-white'
-      }`}
-    />
+    <button
+      type="button"
+      aria-pressed={checked}
+      onClick={onClick}
+      className="flip flex w-full items-center gap-2 px-2 py-2 text-left text-[15px]"
+    >
+      <span
+        aria-hidden="true"
+        className={`h-4 w-4 shrink-0 border-2 border-ink ${
+          radio ? 'rounded-full' : 'rounded-[5px]'
+        } ${checked ? 'bg-pink' : 'bg-transparent'}`}
+      />
+      {children}
+    </button>
   );
 }
 
 export default function FilterPanel({ onApply }) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const groupId = useId();
   const { categories: categoryOptions } = useReferenceData();
 
   const appliedType = searchParams.get('type') || 'ALL';
@@ -82,97 +90,51 @@ export default function FilterPanel({ onApply }) {
   };
 
   return (
-    <div className="w-full md:w-72 shrink-0 bg-white border border-gray-300 rounded-xl p-6">
-      <div className="space-y-6">
-        <section>
-          <h2 className="uppercase tracking-wider text-sm font-semibold text-gray-900 mb-3">
-            TYPE
-          </h2>
-          <div className="space-y-3">
-            {TYPE_OPTIONS.map((option) => (
-              <label
-                key={option.value}
-                className="flex items-center gap-3 cursor-pointer select-none"
-              >
-                <input
-                  type="radio"
-                  name={`type-${groupId}`}
-                  value={option.value}
-                  checked={type === option.value}
-                  onChange={() => setType(option.value)}
-                  className="sr-only"
-                />
-                <OptionIndicator checked={type === option.value} />
-                <span className="text-sm text-gray-700">{option.label}</span>
-              </label>
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="uppercase tracking-wider text-sm font-semibold text-gray-900 mb-3">
-            CATEGORY
-          </h2>
-          <div className="space-y-3">
-            {categoryOptions.map(({ slug, name }) => {
-              const checked = categories.includes(slug);
-              return (
-                <label
-                  key={slug}
-                  className="flex items-center gap-3 cursor-pointer select-none"
-                >
-                  <input
-                    type="checkbox"
-                    name="categories"
-                    value={slug}
-                    checked={checked}
-                    onChange={() => toggleCategory(slug)}
-                    className="sr-only"
-                  />
-                  <OptionIndicator checked={checked} />
-                  <span className="text-sm text-gray-700">{name}</span>
-                </label>
-              );
-            })}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="uppercase tracking-wider text-sm font-semibold text-gray-900 mb-3">
-            DATE
-          </h2>
-          <div className="space-y-3">
-            {DATE_OPTIONS.map((option) => (
-              <label
-                key={option.value}
-                className="flex items-center gap-3 cursor-pointer select-none"
-              >
-                <input
-                  type="radio"
-                  name={`dateRange-${groupId}`}
-                  value={option.value}
-                  checked={dateRange === option.value}
-                  onChange={() => setDateRange(option.value)}
-                  onClick={() => {
-                    if (dateRange === option.value) toggleDateRange(option.value);
-                  }}
-                  className="sr-only"
-                />
-                <OptionIndicator checked={dateRange === option.value} />
-                <span className="text-sm text-gray-700">{option.label}</span>
-              </label>
-            ))}
-          </div>
-        </section>
+    <aside className="panel grid content-start gap-5 p-6" aria-label="Filters">
+      <div className="grid gap-1">
+        <h2 className="ui mb-1 text-sm">Type</h2>
+        {TYPE_OPTIONS.map((option) => (
+          <Row
+            key={option.value}
+            radio
+            checked={type === option.value}
+            onClick={() => setType(option.value)}
+          >
+            {option.label}
+          </Row>
+        ))}
       </div>
 
-      <button
-        type="button"
-        onClick={applyFilters}
-        className="w-full mt-7 py-3 px-4 bg-gray-800 text-white rounded-lg font-semibold uppercase tracking-wider text-sm hover:bg-gray-700"
-      >
-        APPLY FILTERS
-      </button>
-    </div>
+      <div className="grid gap-1">
+        <h2 className="ui mb-1 text-sm">Category</h2>
+        {categoryOptions.map(({ slug, name }) => (
+          <Row
+            key={slug}
+            checked={categories.includes(slug)}
+            onClick={() => toggleCategory(slug)}
+          >
+            {name}
+          </Row>
+        ))}
+      </div>
+
+      <div className="grid gap-1">
+        <h2 className="ui mb-1 text-sm">Date</h2>
+        {DATE_OPTIONS.map((option) => (
+          <Row
+            key={option.value}
+            radio
+            checked={dateRange === option.value}
+            onClick={() => toggleDateRange(option.value)}
+          >
+            {option.label}
+          </Row>
+        ))}
+      </div>
+
+      <Button full onClick={applyFilters}>
+        Apply filters
+      </Button>
+    </aside>
   );
 }
