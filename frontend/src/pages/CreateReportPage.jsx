@@ -143,7 +143,7 @@ export default function CreateReportPage() {
           </p>
 
           {/* Pilihan Lost or Found */}
-          <div className="mt-5 inline-flex items-center bg-white border-2 border-black rounded-full shadow-[3px_3px_0px_#000] p-1 gap-1">
+          <div className="mt-5 inline-flex items-center bg-blue-200 border-2 border-black rounded-full shadow-[3px_3px_0px_#000] p-1 gap-1">
             <button
               type="button"
               onClick={() => setReportType("LOST")}
@@ -286,7 +286,7 @@ export default function CreateReportPage() {
             <label
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleDrop}
-              className="w-full min-h-30 bg-gray-50 hover:bg-gray-100 border-2 border-dashed border-black rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
+              className="w-full min-h-30 bg-blue-200 border-2 border-dashed border-black rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
             >
               <input
                 type="file"
@@ -322,7 +322,7 @@ export default function CreateReportPage() {
                 <button
                   type="button"
                   onClick={handleRemovePhoto}
-                  className="px-3 py-1 bg-white hover:bg-gray-100 border-2 border-black rounded-lg shadow-[2px_2px_0px_#000] text-xs font-bold cursor-pointer"
+                  className="px-3 py-1 bg-rose-300 hover:bg-rose-400 border-2 border-black rounded-lg shadow-[2px_2px_0px_#000] text-xs font-bold cursor-pointer"
                 >
                   Remove Photo
                 </button>
@@ -399,7 +399,7 @@ export default function CreateReportPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-3 bg-black text-white hover:bg-neutral-800 active:translate-x-0.5 active:translate-y-0.5 border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
+              className="px-6 py-3 bg-rose-300 text-black hover:bg-neutral-800 active:translate-x-0.5 active:translate-y-0.5 border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
             >
               Submit Report
             </button>

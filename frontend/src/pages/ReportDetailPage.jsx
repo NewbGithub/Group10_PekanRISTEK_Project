@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getReportById } from "../services/reportService";
+import Badge from "../components/Badge";
+import Photo from "../components/Photo";
 
 function formatEventDate(dateStr) {
   if (!dateStr) return "-";
@@ -82,6 +84,14 @@ export default function ReportDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+        <p className="font-bold animate-pulse">Loading report...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
         <div className="bg-white border-2 border-black rounded-xl p-6 text-center space-y-2">
           <p className="font-bold text-red-600">Something went wrong</p>
           <p className="text-xs text-gray-700">{error}</p>
@@ -140,15 +150,21 @@ export default function ReportDetailPage() {
             {/* Foto */}
             <div
               onClick={() => report.imageUrl && setPopOutPhoto(true)}
-              className={`w-full h-72 sm:h-96 bg-gray-100 border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] overflow-hidden flex items-center justify-center relative ${
+              className={`w-full h-72 sm:h-96 border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] overflow-hidden relative ${
                 report.imageUrl ? "cursor-pointer group" : ""
               }`}
             >
+              <Photo
+                index={report.id}
+                label={`PHOTO · ${(report.category?.name || "ITEM").toUpperCase()}`}
+                imageUrl={report.imageUrl}
+                className="w-full h-full object-cover"
+              />
               {report.imageUrl ? (
                 <img
                   src={report.imageUrl}
                   alt={report.itemName}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                  className="w-full h-full object-cover transition-transform"
                 />
               ) : (
                 <span className="text-xs sm:text-sm font-bold tracking-wider uppercase text-black">
@@ -171,12 +187,7 @@ export default function ReportDetailPage() {
           {/* KOLOM KANAN: Kartu Detail, Tombol Klaim, Share, dan Safety Tip */}
           <div className="lg:col-span-5 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] p-5 sm:p-6 space-y-5">
             <div>
-              <span
-                className={`inline-block px-3 py-1 text-xs font-bold uppercase border-2 border-black rounded-md ${isFound ? "bg-black text-white" : "bg-white text-black"
-                  }`}
-              >
-                {report.type}
-              </span>
+              <Badge status={report.type} />
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
@@ -211,7 +222,9 @@ export default function ReportDetailPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gray-100 border-2 border-black flex items-center justify-center font-bold text-sm shrink-0">
+              <div className={`w-10 h-10 rounded-full ${
+              isFound ? "bg-[#78E09B]" : "bg-[#F598B9]"
+              } border-2 border-black flex items-center justify-center font-bold text-sm shrink-0`}>
                 {report.reporterName?.charAt(0).toUpperCase() || "A"}
               </div>
               <div>
@@ -226,7 +239,11 @@ export default function ReportDetailPage() {
               <button
                 type="button"
                 onClick={() => setShowClaimInfo(!showClaimInfo)}
-                className="w-full py-3 px-4 bg-black text-white hover:bg-neutral-800 active:translate-x-0.5 active:translate-y-0.5 border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] font-bold text-sm transition-all cursor-pointer"
+                className={`w-full py-3 px-4 ${
+                isFound ? 
+                "bg-[#78E09B] hover:bg-[#5fd186]"
+                : "bg-[#F598B9] hover:bg-[#eb7fa6]"
+                } text-black active:translate-x-0.5 active:translate-y-0.5 border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] font-bold text-sm transition-all cursor-pointer`}
               >
                 {isFound
                   ? "This is mine — start a claim"
@@ -257,7 +274,7 @@ export default function ReportDetailPage() {
               </button>
             </div>
 
-            <div className="bg-gray-50 border-2 border-black rounded-xl p-3.5 text-xs space-y-1">
+            <div className="bg-blue-200 border-2 border-black rounded-xl p-3.5 text-xs space-y-1">
               <p className="font-bold text-black">Safety tip</p>
               <p className="text-gray-800 leading-relaxed">
                 Meet in a public place and verify ownership before handing
