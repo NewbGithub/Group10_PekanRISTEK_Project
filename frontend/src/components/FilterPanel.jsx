@@ -22,7 +22,7 @@ function Row({ checked, children, onClick, radio }) {
       type="button"
       aria-pressed={checked}
       onClick={onClick}
-      className="flip flex w-full items-center gap-2 px-2 py-2 text-left text-[0.9375rem]"
+      className="flex w-full items-center gap-2 rounded-[6px] border-2 border-transparent px-2 py-2 text-left text-[0.9375rem] text-mute transition-colors duration-75 md:hover:border-ink md:hover:text-ink"
     >
       <span
         aria-hidden="true"
