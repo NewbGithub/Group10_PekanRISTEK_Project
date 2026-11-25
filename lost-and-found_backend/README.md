@@ -4,6 +4,9 @@ A Lost & Found website for Fasilkom UI (Pacil) students, built for the **RISTEK 
 This repository contains the **Backend** (Express.js, PostgreSQL, Prisma, Cloudinary) and the shared planning documents.
 
 > **Current status: Checkpoints 1-3 implemented (planning, working API, PostgreSQL + Cloudinary).**
+>
+> **Live API (production):** `https://temupacil-backend.vercel.app` — try [`/health`](https://temupacil-backend.vercel.app/health) or [`/reports?limit=3`](https://temupacil-backend.vercel.app/reports?limit=3).
+> Hosted on Vercel (serverless) with a Neon PostgreSQL database; auto-deploys from the `lost-and-found_frontend` branch.
 
 ## 👥 Team
 
@@ -121,5 +124,5 @@ Full details: [`docs/API_CONTRACT.md`](docs/API_CONTRACT.md).
 ## 🗓️ Checkpoints
 
 - [x] **CP1 (16 Nov 2026)** Project Preparation
-- [x] **CP2 (19 Nov 2026)** Main UI & Working API (code ready; deploy + publish base URL)
-- [ ] **CP3 (22 Nov 2026)** Full Integration & Deployment (code ready; run migrations, deploy, verify)
+- [x] **CP2 (19 Nov 2026)** Main UI & Working API
+- [x] **CP3 (22 Nov 2026)** Full Integration & Deployment (API live on Vercel + Neon, migrations applied, verified)

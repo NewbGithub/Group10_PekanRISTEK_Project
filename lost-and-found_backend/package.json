@@ -2,34 +2,41 @@
   "name": "lostfound-backend-final",
   "version": "1.0.0",
   "description": "A Lost & Found website for Fasilkom UI (Pacil) students, built for the **RISTEK Open Class Web Development 2026 Final Project**. This repository contains the **Backend** (Express.js, PostgreSQL, Prisma, Cloudinary) and the shared planning documents.",
-  "main": "index.js",
+  "main": "src/server.js",
   "directories": {
     "doc": "docs",
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "seed":"node prisma/seed.js"
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test",
+    "postinstall": "prisma generate",
+    "build": "prisma generate",
+    "migrate:deploy": "prisma migrate deploy",
+    "seed": "node prisma/seed.js",
+    "seed:demo": "node prisma/seed.js --with-reports"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "engines": {
+    "node": ">=20 <23"
+  },
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "cloudinary": "^2.11.0",
     "cors": "^2.8.6",
     "dotenv": "^18.0.10",
     "express": "^5.3.0",
-    "multer": "^2.5.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.14",
+    "multer": "^2.5.0",
     "prisma": "^6.19.3"
   },
-  "allowScripts": {
-    "@prisma/client@6.19.3": true,
-    "prisma@6.19.3": true,
-    "@prisma/engines@6.19.3": true
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
