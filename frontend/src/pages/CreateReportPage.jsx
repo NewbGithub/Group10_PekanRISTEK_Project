@@ -399,7 +399,7 @@ export default function CreateReportPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-3 bg-rose-300 text-black hover:bg-neutral-800 active:translate-x-0.5 active:translate-y-0.5 border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
+              className="px-6 py-3 bg-rose-300 text-black hover:bg-rose-400 active:translate-x-0.5 active:translate-y-0.5 border-2 border-black rounded-xl shadow-[3px_3px_0px_#000] text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer"
             >
               Submit Report
             </button>
