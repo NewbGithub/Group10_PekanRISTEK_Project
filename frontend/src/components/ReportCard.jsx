@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Badge from './Badge';
 import Photo from './Photo';
+import { photoForReport } from '../data/reportPhotos';
 
 function timeAgo(dateString) {
   const date = new Date(dateString);
@@ -29,6 +30,7 @@ export default function ReportCard({
     : 'w-24 shrink-0 border-r-[3px] border-ink md:w-[13.125rem]';
   const label = (report.category?.name || 'ITEM').toUpperCase();
   const time = timeAgo(report.createdAt);
+  const imageUrl = photoForReport(report);
 
   return (
     <Link
@@ -39,9 +41,8 @@ export default function ReportCard({
       } ${className}`}
     >
       <Photo
-        index={report.id}
         label={label}
-        imageUrl={report.imageUrl}
+        imageUrl={imageUrl}
         className={photo}
       />
       <div className="flex min-w-0 flex-1 flex-col gap-2 p-4 md:p-6">

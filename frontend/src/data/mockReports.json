@@ -38,7 +38,7 @@
     },
     "locationDetail": null,
     "eventDate": "2026-11-15",
-    "imageUrl": "https://res.cloudinary.com/demo/image/upload/sample.jpg",
+    "imageUrl": null,
     "reporterName": "Dimas",
     "contact": {
       "method": "INSTAGRAM",
@@ -86,7 +86,7 @@
     },
     "locationDetail": null,
     "eventDate": "2026-11-14",
-    "imageUrl": "https://res.cloudinary.com/demo/image/upload/cld-sample.jpg",
+    "imageUrl": null,
     "reporterName": "Fajar",
     "contact": {
       "method": "WHATSAPP",
@@ -158,7 +158,7 @@
     },
     "locationDetail": "Rak sepatu",
     "eventDate": "2026-11-11",
-    "imageUrl": "https://res.cloudinary.com/demo/image/upload/sample.jpg",
+    "imageUrl": null,
     "reporterName": "Rina",
     "contact": {
       "method": "INSTAGRAM",
@@ -206,7 +206,7 @@
     },
     "locationDetail": "Lobby lantai 1",
     "eventDate": "2026-11-10",
-    "imageUrl": "https://res.cloudinary.com/demo/image/upload/cld-sample.jpg",
+    "imageUrl": null,
     "reporterName": "Tari",
     "contact": {
       "method": "WHATSAPP",

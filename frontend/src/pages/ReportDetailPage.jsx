@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getReportById } from "../services/reportService";
 import Badge from "../components/Badge";
-import Photo from "../components/Photo";
+import { photoForReport } from "../data/reportPhotos";
 
 function formatEventDate(dateStr) {
   if (!dateStr) return "-";
@@ -112,6 +112,7 @@ export default function ReportDetailPage() {
   }
 
   const isFound = report.type?.toUpperCase() === "FOUND";
+  const photoSrc = photoForReport(report);
 
   const fullLocation = [report.location?.name, report.locationDetail]
     .filter(Boolean)
@@ -147,31 +148,19 @@ export default function ReportDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* KOLOM KIRI: Foto & About this item */}
           <div className="lg:col-span-7 space-y-5">
-            {/* Foto */}
-            <div
-              onClick={() => report.imageUrl && setPopOutPhoto(true)}
-              className={`w-full h-72 sm:h-96 border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] overflow-hidden relative ${
-                report.imageUrl ? "cursor-pointer group" : ""
-              }`}
-            >
-              <Photo
-                index={report.id}
-                label={`PHOTO · ${(report.category?.name || "ITEM").toUpperCase()}`}
-                imageUrl={report.imageUrl}
-                className="w-full h-full object-cover"
-              />
-              {report.imageUrl ? (
+            {/* Foto (hanya kalau memang ada) */}
+            {photoSrc && (
+              <div
+                onClick={() => setPopOutPhoto(true)}
+                className="w-full h-72 sm:h-96 border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] overflow-hidden relative cursor-pointer group"
+              >
                 <img
-                  src={report.imageUrl}
+                  src={photoSrc}
                   alt={report.itemName}
                   className="w-full h-full object-cover transition-transform"
                 />
-              ) : (
-                <span className="text-xs sm:text-sm font-bold tracking-wider uppercase text-black">
-                  PHOTO · {report.category?.name || "ITEM"}
-                </span>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Deskripsi Item */}
             <div className="bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] p-5 sm:p-6">
@@ -285,7 +274,7 @@ export default function ReportDetailPage() {
         </div>
       </div>
 
-      {popOutPhoto && report.imageUrl && (
+      {popOutPhoto && photoSrc && (
         <div
           onClick={() => setPopOutPhoto(false)}
           className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4"
@@ -309,7 +298,7 @@ export default function ReportDetailPage() {
 
             <div className="w-full h-80 sm:h-112.5 bg-gray-100 flex items-center justify-center">
               <img
-                src={report.imageUrl}
+                src={photoSrc}
                 alt={report.itemName}
                 className="w-full h-full object-contain bg-black"
               />
