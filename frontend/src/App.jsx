@@ -6,6 +6,7 @@ import ReportListPage from './pages/ReportListPage';
 import ReportDetailPage from './pages/ReportDetailPage';
 import CreateReportPage from './pages/CreateReportPage';
 import HomePage from './pages/HomePage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="/reports" element={<ReportListPage />} />
             <Route path="/reports/:id" element={<ReportDetailPage />} />
             <Route path="/create" element={<CreateReportPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
         <Footer />
