@@ -10,7 +10,7 @@ Version **1.0** (Checkpoint 1). This is the agreement between Backend and Fronte
 | Item | Value |
 |------|-------|
 | Base URL (local) | `http://localhost:3000` |
-| Base URL (production) | `TBD` (publish before Week 3) |
+| Base URL (production) | `https://temupacil-backend.vercel.app` |
 | Path prefix | none. Endpoints are exactly `/reports`, `/reports/:id`, etc. |
 | Format | JSON. Only `POST /reports` uses `multipart/form-data` (it may carry a file). |
 | JSON naming | `camelCase` keys |
