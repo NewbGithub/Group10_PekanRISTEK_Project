@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Button from './Button';
 import pandaLogo from './panda-icon-8264976-512.png';
+import catLogo from './CatDoodleLogo-removebg-preview.png';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -57,6 +58,12 @@ export default function Navbar() {
             alt=""
             aria-hidden="true"
             className="wiggle block h-10 w-10 object-cover"
+          />
+          <img
+            src={catLogo}
+            alt=""
+            aria-hidden="true"
+            className="block h-11 w-auto object-contain"
           />
           <span className="font-head text-xl font-bold tracking-[-0.02em]">
             Temu Pacil
