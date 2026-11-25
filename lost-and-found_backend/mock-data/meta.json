@@ -45,12 +45,12 @@
   ],
   "locations": [
     {
-      "slug": "gedung-a",
-      "name": "Gedung A"
+      "slug": "gedung-lama",
+      "name": "Gedung Lama"
     },
     {
-      "slug": "gedung-b",
-      "name": "Gedung B"
+      "slug": "gedung-baru",
+      "name": "Gedung Baru"
     },
     {
       "slug": "perpustakaan",

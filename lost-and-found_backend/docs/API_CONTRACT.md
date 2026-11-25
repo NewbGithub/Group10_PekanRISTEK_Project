@@ -15,7 +15,7 @@ Version **1.0** (Checkpoint 1). This is the agreement between Backend and Fronte
 | Format | JSON. Only `POST /reports` uses `multipart/form-data` (it may carry a file). |
 | JSON naming | `camelCase` keys |
 | Enum values | `UPPER_CASE` (e.g. `LOST`, `WHATSAPP`) |
-| Reference slugs | `lowercase-kebab` (e.g. `gedung-a`, `card-document`) |
+| Reference slugs | `lowercase-kebab` (e.g. `gedung-lama`, `card-document`) |
 | Dates | `eventDate` = `YYYY-MM-DD`. `createdAt` / `updatedAt` = ISO 8601 UTC string |
 | Auth | None. Everything is public. |
 | Edit / delete | **Not available to the public.** There is no `PUT`, `PATCH`, or `DELETE`. |
@@ -68,7 +68,7 @@ This is the shape returned by `GET /reports` (inside `data[]`) and `GET /reports
   "itemName": "Tumbler Tupperware Biru",
   "description": "Tumbler biru merek Tupperware, ada stiker kecil logo Pacil di bagian bawah.",
   "category": { "slug": "drinkware", "name": "Tumbler & Botol" },
-  "location": { "slug": "gedung-a", "name": "Gedung A" },
+  "location": { "slug": "gedung-lama", "name": "Gedung Lama" },
   "locationDetail": "Ruang A206",
   "eventDate": "2026-11-14",
   "imageUrl": null,
@@ -135,7 +135,7 @@ Returns reports, **newest first** by default.
 | `q` | string | — | Search by **item name**, case-insensitive, "contains". Trimmed. Max 100 chars. |
 | `type` | string | — | `LOST` or `FOUND` (uppercase). |
 | `category` | string | — | A category **slug**, e.g. `electronics`. |
-| `location` | string | — | A location **slug**, e.g. `gedung-a`. |
+| `location` | string | — | A location **slug**, e.g. `gedung-lama`. |
 | `page` | integer | `1` | Min 1, max 1,000,000. |
 | `limit` | integer | `10` | Min 1, max 50. |
 | `sort` | string | `newest` | `newest` or `oldest` (by `createdAt`). |
@@ -286,7 +286,7 @@ curl -X POST http://localhost:3000/reports \
   -F "itemName=Tumbler Tupperware Biru" \
   -F "description=Tumbler biru, ada stiker logo Pacil di bagian bawah." \
   -F "category=drinkware" \
-  -F "location=gedung-a" \
+  -F "location=gedung-lama" \
   -F "locationDetail=Ruang A206" \
   -F "eventDate=2026-11-14" \
   -F "reporterName=Raka" \
@@ -321,7 +321,7 @@ const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/reports`, {
     "itemName": "Tumbler Tupperware Biru",
     "description": "Tumbler biru, ada stiker logo Pacil di bagian bawah.",
     "category": { "slug": "drinkware", "name": "Tumbler & Botol" },
-    "location": { "slug": "gedung-a", "name": "Gedung A" },
+    "location": { "slug": "gedung-lama", "name": "Gedung Lama" },
     "locationDetail": "Ruang A206",
     "eventDate": "2026-11-14",
     "imageUrl": null,

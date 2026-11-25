@@ -16,8 +16,8 @@ export const CATEGORY_OPTIONS = [
 ];
 
 export const LOCATION_OPTIONS = [
-  { slug: 'gedung-a', name: 'Gedung A' },
-  { slug: 'gedung-b', name: 'Gedung B' },
+  { slug: 'gedung-lama', name: 'Gedung Lama' },
+  { slug: 'gedung-baru', name: 'Gedung Baru' },
   { slug: 'perpustakaan', name: 'Perpustakaan' },
   { slug: 'kantin', name: 'Kantin' },
   { slug: 'sekretariat', name: 'Sekretariat (Sekre)' },

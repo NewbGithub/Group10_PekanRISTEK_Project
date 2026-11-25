@@ -104,7 +104,7 @@ test('create: unknown category/location -> 400 with field errors', async () => {
 
 test('create: a file is ignored (imageUrl null) when Cloudinary is not configured', async () => {
   const input = {
-    type: 'FOUND', itemName: 'Kunci Kos', description: 'kunci kos ditemukan di lobi', category: 'keys', location: 'gedung-b',
+    type: 'FOUND', itemName: 'Kunci Kos', description: 'kunci kos ditemukan di lobi', category: 'keys', location: 'gedung-baru',
     locationDetail: 'Lobi', eventDate: '2026-11-19', reporterName: 'Tes', contactWhatsapp: null,
     contactInstagram: null, contactLine: null, contactEmail: 'a@b.co', publicContactMethod: 'EMAIL',
   };

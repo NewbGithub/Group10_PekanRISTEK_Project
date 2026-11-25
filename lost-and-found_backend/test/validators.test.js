@@ -8,7 +8,7 @@ const validBody = () => ({
   itemName: 'Tumbler Biru',
   description: 'Tumbler biru tertinggal di kelas.',
   category: 'drinkware',
-  location: 'gedung-a',
+  location: 'gedung-lama',
   eventDate: '2026-11-20',
   reporterName: 'Raka',
   contactWhatsapp: '081200000001',

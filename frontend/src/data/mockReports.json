@@ -9,8 +9,8 @@
       "name": "Tumbler & Botol"
     },
     "location": {
-      "slug": "gedung-a",
-      "name": "Gedung A"
+      "slug": "gedung-lama",
+      "name": "Gedung Lama"
     },
     "locationDetail": "Ruang A206",
     "eventDate": "2026-11-14",
@@ -177,8 +177,8 @@
       "name": "Buku & Alat Tulis"
     },
     "location": {
-      "slug": "gedung-b",
-      "name": "Gedung B"
+      "slug": "gedung-baru",
+      "name": "Gedung Baru"
     },
     "locationDetail": "Ruang B105",
     "eventDate": "2026-11-12",
@@ -201,8 +201,8 @@
       "name": "Pakaian & Aksesori"
     },
     "location": {
-      "slug": "gedung-b",
-      "name": "Gedung B"
+      "slug": "gedung-baru",
+      "name": "Gedung Baru"
     },
     "locationDetail": "Lobby lantai 1",
     "eventDate": "2026-11-10",
@@ -225,8 +225,8 @@
       "name": "Tas & Dompet"
     },
     "location": {
-      "slug": "gedung-a",
-      "name": "Gedung A"
+      "slug": "gedung-lama",
+      "name": "Gedung Lama"
     },
     "locationDetail": "Ruang A101",
     "eventDate": "2026-11-10",
@@ -249,8 +249,8 @@
       "name": "Buku & Alat Tulis"
     },
     "location": {
-      "slug": "gedung-a",
-      "name": "Gedung A"
+      "slug": "gedung-lama",
+      "name": "Gedung Lama"
     },
     "locationDetail": "Ruang A304",
     "eventDate": "2026-11-09",
