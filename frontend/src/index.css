@@ -157,6 +157,12 @@ body {
     animation: wiggle 800ms steps(4, end) infinite alternate;
   }
 
+  /* Stop-motion hop for the cat mark: lifts and tilts like a flipbook */
+  .cat-hop {
+    transform-origin: 50% 85%;
+    animation: cathop 900ms steps(3, end) infinite alternate;
+  }
+
   /* Axis-locked snap-in, no fade, no bounce */
   .snap-x {
     animation: snapx 110ms var(--ease) both;
@@ -178,6 +184,11 @@ body {
   from { transform: rotate(-6deg); }
   to { transform: rotate(6deg); }
 }
+@keyframes cathop {
+  from { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-4px) rotate(0deg); }
+  to { transform: translateY(0) rotate(3deg); }
+}
 @keyframes snapx {
   from { transform: translateX(100%); }
   to { transform: none; }
@@ -190,6 +201,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .stamp,
   .wiggle,
+  .cat-hop,
   .snap-x,
   .snap-y {
     animation: none;
