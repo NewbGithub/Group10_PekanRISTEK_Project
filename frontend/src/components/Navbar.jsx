@@ -66,7 +66,7 @@ export default function Navbar() {
             src={catLogo}
             alt=""
             aria-hidden="true"
-            className="cat-hop block h-11 w-auto object-contain"
+            className="wiggle block h-11 w-auto object-contain"
           />
         </NavLink>
 
