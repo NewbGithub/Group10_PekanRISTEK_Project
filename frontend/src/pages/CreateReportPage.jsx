@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { createReport } from "../services/reportService";
 import { getReferenceData } from "../services/referenceData";
 
@@ -28,9 +28,12 @@ const LOCATIONS = [
 
 export default function CreateReportPage() {
   const navigate = useNavigate();
-  
-  // State untuk menyimpan semua isi formulir
-  const [reportType, setReportType] = useState("FOUND"); 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Halaman ini dipakai untuk dua mode. `?type=LOST` / `?type=FOUND` datang dari
+  // tombol di Home; tanpa parameter (tombol "Report an Item" di navbar) default LOST.
+  const typeParam = (searchParams.get("type") || "").toUpperCase();
+  const [reportType, setReportType] = useState(typeParam === "FOUND" ? "FOUND" : "LOST");
 
   const [categories, setCategories] = useState(CATEGORIES);
   const [locations, setLocations] = useState(LOCATIONS);
@@ -39,7 +42,8 @@ export default function CreateReportPage() {
   const [category, setcategory] = useState("");
   const [location, setlocation] = useState("");
   const [locationDetail, setLocationDetail] = useState("");
-  const [eventDate, setEventDate] = useState("");
+  const todayStr = new Date().toLocaleDateString("en-CA");
+  const [eventDate, setEventDate] = useState(todayStr);
   const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState("");
@@ -47,9 +51,20 @@ export default function CreateReportPage() {
   const [publicContactMethod, setPublicContactMethod] = useState("WHATSAPP");
   const [contactValue, setContactValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const isFound = reportType === "FOUND";
-  const todayStr = new Date().toLocaleDateString("en-CA");
+
+  // Ikut berubah kalau URL berubah saat halaman sudah terbuka (mis. Home -> /create?type=FOUND).
+  useEffect(() => {
+    const next = (searchParams.get("type") || "").toUpperCase();
+    if (next === "LOST" || next === "FOUND") setReportType(next);
+  }, [searchParams]);
+
+  // Toggle di halaman ikut ditulis ke URL supaya refresh / share tetap konsisten.
+  const changeType = (next) => {
+    setReportType(next);
+    setSearchParams({ type: next }, { replace: true });
+  };
 
   useEffect(() => {
     getReferenceData().then((ref) => {
@@ -146,7 +161,7 @@ export default function CreateReportPage() {
           <div className="mt-5 inline-flex items-center bg-blue-200 border-2 border-black rounded-full shadow-[3px_3px_0px_#000] p-1 gap-1">
             <button
               type="button"
-              onClick={() => setReportType("LOST")}
+              onClick={() => changeType("LOST")}
               className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase transition-all cursor-pointer ${!isFound
                   ? "bg-black text-white"
                   : "text-black hover:bg-gray-100"
@@ -156,7 +171,7 @@ export default function CreateReportPage() {
             </button>
             <button
               type="button"
-              onClick={() => setReportType("FOUND")}
+              onClick={() => changeType("FOUND")}
               className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase transition-all cursor-pointer ${isFound
                   ? "bg-black text-white"
                   : "text-black hover:bg-gray-100"

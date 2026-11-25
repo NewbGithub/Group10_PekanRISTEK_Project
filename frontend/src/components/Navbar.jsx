@@ -80,7 +80,7 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button to="/create" small className="!px-6 !py-2">
+          <Button to="/create?type=LOST" small className="!px-6 !py-2">
             Report an Item
           </Button>
           <button
@@ -118,7 +118,7 @@ export default function Navbar() {
             </NavLink>
           </div>
           <div className="px-4 py-3">
-            <Button to="/create" full onClick={closeMenu}>
+            <Button to="/create?type=LOST" full onClick={closeMenu}>
               Report an Item
             </Button>
           </div>
