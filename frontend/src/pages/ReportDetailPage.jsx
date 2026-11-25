@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getReportById } from "../services/reportService";
 import Badge from "../components/Badge";
 import { photoForReport } from "../data/reportPhotos";
+import Photo from "../components/Photo";
 
 function formatEventDate(dateStr) {
   if (!dateStr) return "-";
@@ -148,19 +149,20 @@ export default function ReportDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* KOLOM KIRI: Foto & About this item */}
           <div className="lg:col-span-7 space-y-5">
-            {/* Foto (hanya kalau memang ada) */}
-            {photoSrc && (
-              <div
-                onClick={() => setPopOutPhoto(true)}
-                className="w-full h-72 sm:h-96 border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] overflow-hidden relative cursor-pointer group"
-              >
-                <img
-                  src={photoSrc}
-                  alt={report.itemName}
-                  className="w-full h-full object-cover transition-transform"
-                />
-              </div>
-            )}
+            {/* Foto */}
+            <div
+              onClick={() => photoSrc && setPopOutPhoto(true)}
+              className={`w-full h-72 sm:h-96 border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] overflow-hidden relative ${
+                photoSrc ? "cursor-pointer group" : ""
+              }`}
+            >
+              <Photo
+                index={report.id}
+                label={`PHOTO · ${(report.category?.name || "ITEM").toUpperCase()}`}
+                imageUrl={photoSrc}
+                className="w-full h-full"
+              />
+            </div>
 
             {/* Deskripsi Item */}
             <div className="bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] p-5 sm:p-6">

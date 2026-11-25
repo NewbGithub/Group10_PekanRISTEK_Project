@@ -41,6 +41,7 @@ export default function ReportCard({
       } ${className}`}
     >
       <Photo
+        index={report.id}
         label={label}
         imageUrl={imageUrl}
         className={photo}
