@@ -28,7 +28,7 @@ Runs `test/*.test.js` with Node's built-in test runner. They cover validators, t
 ### How to send `POST /reports` in Postman
 1. Click **New → HTTP**, method **POST**, URL `http://localhost:3000/reports`.
 2. Open the **Body** tab and choose **form-data**.
-3. Add keys (type **Text**): `type`=`LOST`, `itemName`, `description`, `category`=`drinkware`, `location`=`gedung-a`, `eventDate`=`2026-11-20`, `reporterName`, `contactWhatsapp`=`081234567890`, `contactInstagram`=`nama.ig`, `publicContactMethod`=`WHATSAPP`.
+3. Add keys (type **Text**): `type`=`LOST`, `itemName`, `description`, `category`=`drinkware`, `location`=`gedung-lama`, `eventDate`=`2026-11-20`, `reporterName`, `contactWhatsapp`=`081234567890`, `contactInstagram`=`nama.ig`, `publicContactMethod`=`WHATSAPP`.
 4. (Optional) add a key named `image`, hover the key cell, change type from *Text* to **File**, and pick a JPG/PNG/WEBP.
 5. Do NOT set a `Content-Type` header manually. Click **Send**.
 6. Check the response: `contact` contains only the WhatsApp value; `nama.ig` must not appear anywhere.

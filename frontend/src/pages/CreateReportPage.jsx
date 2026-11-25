@@ -15,8 +15,8 @@ const CATEGORIES = [
 ];
 
 const LOCATIONS = [
-  { id: 1, slug: "gedung-a", name: "Gedung A" },
-  { id: 2, slug: "gedung-b", name: "Gedung B" },
+  { id: 1, slug: "gedung-lama", name: "Gedung Lama" },
+  { id: 2, slug: "gedung-baru", name: "Gedung Baru" },
   { id: 3, slug: "perpustakaan", name: "Perpustakaan" },
   { id: 4, slug: "kantin", name: "Kantin" },
   { id: 5, slug: "sekretariat", name: "Sekretariat" },

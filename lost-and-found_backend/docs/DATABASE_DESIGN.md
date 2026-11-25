@@ -47,7 +47,7 @@ erDiagram
 ```
 
 Why `Category` and `Location` are separate tables (not plain text)?
-Filters and dropdowns need a fixed list; separate tables prevent typos like "Gedung A" vs "gedung a", and give us a real **relationship** to design and explain.
+Filters and dropdowns need a fixed list; separate tables prevent typos like "Gedung Lama" vs "gedung a", and give us a real **relationship** to design and explain.
 
 ## 2. Enums
 
@@ -85,7 +85,7 @@ Filters and dropdowns need a fixed list; separate tables prevent typos like "Ged
 
 **Categories** — `card-document` Kartu & Dokumen, `electronics` Elektronik, `bags-wallets` Tas & Dompet, `drinkware` Tumbler & Botol, `keys` Kunci, `clothing` Pakaian & Aksesori, `stationery` Buku & Alat Tulis, `other` Lainnya.
 
-**Locations** — `gedung-a`, `gedung-b`, `perpustakaan`, `kantin`, `sekretariat`, `pos-satpam`, `musholla`, `area-parkir`, `lainnya`.
+**Locations** — `gedung-lama`, `gedung-baru`, `perpustakaan`, `kantin`, `sekretariat`, `pos-satpam`, `musholla`, `area-parkir`, `lainnya`.
 
 Source of truth: `mock-data/meta.json`. Adjust the list together with the Frontend team if needed.
 
