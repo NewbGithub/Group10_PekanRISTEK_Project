@@ -59,15 +59,15 @@ export default function Navbar() {
             aria-hidden="true"
             className="wiggle block h-10 w-10 object-cover"
           />
+          <span className="font-head text-xl font-bold tracking-[-0.02em]">
+            Temu Pacil
+          </span>
           <img
             src={catLogo}
             alt=""
             aria-hidden="true"
             className="block h-11 w-auto object-contain"
           />
-          <span className="font-head text-xl font-bold tracking-[-0.02em]">
-            Temu Pacil
-          </span>
         </NavLink>
 
         <nav className="hidden md:flex" aria-label="Main">
