@@ -17,7 +17,10 @@ const DEMO_PHOTOS = [
 /** Returns the photo to show for a report, or null when there is none. */
 export function photoForReport(report) {
   if (!report) return null;
-  if (report.imageUrl) return report.imageUrl;
+
+  // Ignore the old Cloudinary demo URLs that were seeded as placeholders.
+  const isPlaceholder = /res\.cloudinary\.com\/demo\//i.test(report.imageUrl || '');
+  if (report.imageUrl && !isPlaceholder) return report.imageUrl;
 
   const byId = DEMO_PHOTOS.find((photo) => photo.id === report.id);
   if (byId) return byId.src;
